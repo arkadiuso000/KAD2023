@@ -69,38 +69,48 @@ def wyznaczOdchylenieStandardowe(lista):
 def wyznaczMediane(lista):
     posortowana_lista = sorted(lista)
 
-    srodek = len(posortowana_lista) // 2
+    #odejmuje jeden aby dzialac na indeksach tablicy
+    srodek = (len(posortowana_lista) - 1) // 2
 
     if len(posortowana_lista) % 2 == 0:
-        print((posortowana_lista[srodek-1] + posortowana_lista[srodek]) / 2)
-        return (posortowana_lista[srodek-1] + posortowana_lista[srodek]) / 2
+        return (posortowana_lista[srodek] + posortowana_lista[srodek + 1]) / 2
     else:
-        return posortowana_lista[srodek]
+        return  float(posortowana_lista[srodek])
 
 def wyznaczTrzyKwartyle(lista):
+    # wg prezentacji na wykladzie: W_2_Statystyka_Miary_położenia strona 73
+    # wystarczy wywolac metode mediane na polowach posortowanej listy
+    # wtedy wyznaczy to pierwszy i trzechi kwartyl
+    # sposob ten jest rowniez zgodny z metoda 2 z tego bloga:
+    # https://www.statystyczny.pl/jak-obliczamy-kwantyle/
+
     listaKwartyli = []
-    srodek = (len(lista)) // 2
-    posortowanaLista = sorted(lista)
-    print("srodek glownej tabeli {}".format(srodek) )
-    if (len(posortowanaLista) % 2 == 0):
-        listaKwartyli.append(wyznaczMediane(posortowanaLista[:srodek]))
+    listaPosortowana = sorted(lista)
+    srodek = (len(listaPosortowana) - 1) // 2
+
+    listaKwartyli.append(wyznaczMediane(listaPosortowana[:srodek+1]))
+    # print("pierwszy podzbior:           {}".format(listaPosortowana[:srodek+1]))
+    listaKwartyli.append(wyznaczMediane(listaPosortowana))
+    if len(listaPosortowana) % 2 == 0:
+        listaKwartyli.append(wyznaczMediane(listaPosortowana[srodek+1:]))
+        # print("drugi podzbior:              {}".format(listaPosortowana[srodek+1:]))
     else:
-        listaKwartyli.append(wyznaczMediane(posortowanaLista[:srodek+1]))
-    listaKwartyli.append(wyznaczMediane(posortowanaLista))
-    listaKwartyli.append(wyznaczMediane(posortowanaLista[srodek:]))
+        listaKwartyli.append(wyznaczMediane(listaPosortowana[srodek:]))
+        # print("drugi podzbior:              {}".format(listaPosortowana[srodek:]))
+
     return listaKwartyli
-    #do nothing
+
     print()
 
 
 
 
-a = [1, 2, 3, 4, 5, 6]
-
+a = [1, 2, 3, 4, 5, 6, 7]
+print("Mediana a: {}".format(wyznaczMediane(a)))
 # a = range(0,101)
 
-print("moje kwantyle:       {}".format(wyznaczTrzyKwartyle(a)))
+print("moje kwartyle:       {}".format(wyznaczTrzyKwartyle(a)))
 
-print("poprawne kwantyle:   [{}, {}, {}]".format(np.quantile(a,1/4),np.quantile(a,1/2),np.quantile(a,3/4)))
+print("numpaja kwartyle:    [{}, {}, {}]".format(np.quantile(a,1/4),np.quantile(a,1/2),np.quantile(a,3/4)))
 
 
