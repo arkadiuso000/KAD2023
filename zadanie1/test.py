@@ -245,3 +245,40 @@ axs[1].set_xlabel("Gatunek", fontsize=16, fontweight='bold')
 #zapewnia odpowiednie odstępy między wykresami
 plt.tight_layout()
 plt.show()
+
+
+        #szerokosc platka kielicha
+#rozmiar calego obrazka
+plt.figure(figsize=(16, 8))
+#tworzy dwa wykresy na jednym obrazku
+fig, axs = plt.subplots(1, 2, figsize=(12, 6))
+
+                        #rysowanie histogramu
+axs[0].hist(myData[columns[3]], bins=10, alpha=0.5, edgecolor='black', color='green')
+#wlacza siatke
+axs[0].grid(True, linewidth=0.5)
+#opisy z wlasciwosciami
+axs[0].set_ylabel('Liczebność',fontsize=16, fontweight='bold')
+axs[0].set_xlabel('Szerokość (cm)',fontsize=16, fontweight='bold')
+axs[0].set_title(nazwyWykresow[2],fontsize=16, fontweight='bold')
+
+                        #rysowanie wykresu pudelkowego
+
+#tworzy dane do wykresu
+data1 = list(myData['species'].drop_duplicates())
+data2 = [myData[myData['species'] == data1[0]]['petal width'],
+         myData[myData['species'] == data1[1]]['petal width'],
+         myData[myData['species'] == data1[2]]['petal width']]
+#oznaczenia na osi x
+
+#wlacza siatke
+axs[1].grid(True, linewidth=0.5)
+#opisy z wlasciwosciami
+axs[1].boxplot(data2, labels=data1,)
+axs[1].set_ylabel('Szerokość (cm)', fontsize=16, fontweight='bold')
+axs[1].set_xlabel("Gatunek", fontsize=16, fontweight='bold')
+
+
+#zapewnia odpowiednie odstępy między wykresami
+plt.tight_layout()
+plt.show()
