@@ -8,7 +8,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 
 # wczytuje plik csv
-columns = ["sepal lengtha", "sepal width", "petal length", "petal width", "species"]
+columns = ["sepal length", "sepal width", "petal length", "petal width", "species"]
 mapowanie_gatunkow = {
     0: 'setosa',
     1: 'versicolor',
@@ -25,10 +25,13 @@ liczebnosc_gatunkow = myData['species'].value_counts()
 # oblicza udział procentowy poszczególnych gatunków
 # normalize=True oznacza ze chcemy wynik miec w procentach domyslnie jest false
 udzial_procentowy = (myData['species'].value_counts(normalize=True) * 100).round(2)
-# print("Liczebność poszczególnych gatunków:")
-# print(liczebnosc_gatunkow)
-# print("\nUdział procentowy poszczególnych gatunków:")
-# print(udzial_procentowy)
+print("\tPUNKT 1\n")
+print("Liczebność poszczególnych gatunków:")
+print(liczebnosc_gatunkow)
+print("\nUdział procentowy poszczególnych gatunków:")
+print(udzial_procentowy)
+print("\n\n")
+
 
 
 # PUNKT 2.
@@ -100,17 +103,28 @@ def wyznaczTrzyKwartyle(lista):
 
     return listaKwartyli
 
-    print()
 
 
 
+# a = [1, 2, 3, 4, 5, 6, 7]
+# print("Mediana a: {}".format(wyznaczMediane(a)))
+# # a = range(0,101)
+#
+# print("moje kwartyle:       {}".format(wyznaczTrzyKwartyle(a)))
+#
+# print("numpaja kwartyle:    [{}, {}, {}]".format(np.quantile(a,1/4),np.quantile(a,1/2),np.quantile(a,3/4)))
+#
 
-a = [1, 2, 3, 4, 5, 6, 7]
-print("Mediana a: {}".format(wyznaczMediane(a)))
-# a = range(0,101)
-
-print("moje kwartyle:       {}".format(wyznaczTrzyKwartyle(a)))
-
-print("numpaja kwartyle:    [{}, {}, {}]".format(np.quantile(a,1/4),np.quantile(a,1/2),np.quantile(a,3/4)))
-
-
+tytulTabeli = "Cecha    Minimum     Sr +- odch stand    Mediana (Q1-Q3)     Maksimum"
+row1 = "DlDzialki      {}      {}      {}      {}".format(wyznaczMinimum(myData["sepal length"]),wyznaczSredniaArytmetyczna(myData["sepal length"]),  wyznaczTrzyKwartyle(myData["sepal length"]), wyznaczMaksimum(myData["sepal length"]))
+# print(tytulTabeli)
+# print(row1)
+dlugoscDzialki = "\tDługość działki kielicha (cm)\nMinimum:            {}\nSr arytm + odch:    {} +- {}\nMediana(Q1,Q2,Q3):  {}\nMaksimum:           {}\n\n".format(wyznaczMinimum(myData["sepal length"]),wyznaczSredniaArytmetyczna(myData["sepal length"]),wyznaczOdchylenieStandardowe(myData["sepal length"]),  wyznaczTrzyKwartyle(myData["sepal length"]), wyznaczMaksimum(myData["sepal length"]))
+szerokoscDzialki = "\tSzerokość działki kielicha (cm)\nMinimum:            {}\nSr arytm + odch:    {} +- {}\nMediana(Q1,Q2,Q3):  {}\nMaksimum:           {}\n\n".format(wyznaczMinimum(myData["sepal width"]),wyznaczSredniaArytmetyczna(myData["sepal width"]),wyznaczOdchylenieStandardowe(myData["sepal width"]),  wyznaczTrzyKwartyle(myData["sepal width"]), wyznaczMaksimum(myData["sepal width"]))
+dlugoscPlatka = "\tDługość płatka (cm)\nMinimum:            {}\nSr arytm + odch:    {} +- {}\nMediana(Q1,Q2,Q3):  {}\nMaksimum:           {}\n\n".format(wyznaczMinimum(myData["petal length"]),wyznaczSredniaArytmetyczna(myData["petal length"]),wyznaczOdchylenieStandardowe(myData["petal length"]),  wyznaczTrzyKwartyle(myData["petal length"]), wyznaczMaksimum(myData["petal length"]))
+szerokoscPlatka = "\tSzerokość płatka (cm)\nMinimum:            {}\nSr arytm + odch:    {} +- {}\nMediana(Q1,Q2,Q3):  {}\nMaksimum:           {}\n\n".format(wyznaczMinimum(myData["petal width"]),wyznaczSredniaArytmetyczna(myData["petal width"]),wyznaczOdchylenieStandardowe(myData["petal width"]),  wyznaczTrzyKwartyle(myData["petal width"]), wyznaczMaksimum(myData["petal width"]))
+print("\tPUNKT 2\n")
+print(dlugoscDzialki)
+print(szerokoscDzialki)
+print(dlugoscPlatka)
+print(szerokoscPlatka)
