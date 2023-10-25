@@ -22,14 +22,20 @@ myData['species'] = myData['species'].replace(mapowanie_gatunkow)
 
 # oblicza liczebność poszczególnych gatunków
 liczebnosc_gatunkow = myData['species'].value_counts()
+caloscLiczba = myData['species'].value_counts().sum()
+
 # oblicza udział procentowy poszczególnych gatunków
 # normalize=True oznacza ze chcemy wynik miec w procentach domyslnie jest false
 udzial_procentowy = (myData['species'].value_counts(normalize=True) * 100).round(2)
+calosProcent = (myData['species'].value_counts(normalize=True) * 100).sum()
 print("\tPUNKT 1\n")
 print("Liczebność poszczególnych gatunków:")
 print(liczebnosc_gatunkow)
-print("\nUdział procentowy poszczególnych gatunków:")
+print("Razem: {}".format(caloscLiczba))
+print("\nUdział procentowy poszczególnych gatunków [%]:")
 print(udzial_procentowy)
+print("Razem: {}".format(math.ceil(calosProcent)))
+
 print("\n\n")
 
 
@@ -37,7 +43,7 @@ print("\n\n")
 # PUNKT 2.
 
 def wyznaczMaksimum(lista):
-    maksimum = 0
+    maksimum = lista[0]
     for wartosc in lista:
         if wartosc > maksimum:
             maksimum = wartosc
@@ -45,7 +51,7 @@ def wyznaczMaksimum(lista):
 
 
 def wyznaczMinimum(lista):
-    maksimum = 9999
+    maksimum = lista[0]
     for wartosc in lista:
         if wartosc < maksimum:
             maksimum = wartosc
