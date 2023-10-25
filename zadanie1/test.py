@@ -143,9 +143,10 @@ plt.figure(figsize=(16, 8))
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
                         #rysowanie histogramu
-axs[0].hist(myData[columns[0]], bins=10, alpha=0.5, edgecolor='black', color='green')
+axs[0].hist(myData[columns[0]], bins=np.arange(4, 8.5, 0.5), alpha=0.5, edgecolor='black', color='green')
 #ustawia os x
-axs[0].set_xlim(4.0,8.0)
+# axs[0].set_xlim(4.0,8.0)
+
 #wlacza siatke
 axs[0].grid(True, linewidth=0.5)
 #opisy z wlasciwosciami
@@ -181,7 +182,7 @@ plt.figure(figsize=(16, 8))
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
                         #rysowanie histogramu
-axs[0].hist(myData[columns[1]], bins=10, alpha=0.5, edgecolor='black', color='green')
+axs[0].hist(myData[columns[1]], bins=8, alpha=0.5, edgecolor='black', color='green')
 #wlacza siatke
 axs[0].grid(True, linewidth=0.5)
 #opisy z wlasciwosciami
@@ -217,7 +218,7 @@ plt.figure(figsize=(16, 8))
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
                         #rysowanie histogramu
-axs[0].hist(myData[columns[2]], bins=10, alpha=0.5, edgecolor='black', color='green')
+axs[0].hist(myData[columns[2]], bins=8, alpha=0.5, edgecolor='black', color='green')
 #wlacza siatke
 axs[0].grid(True, linewidth=0.5)
 #opisy z wlasciwosciami
@@ -254,7 +255,7 @@ plt.figure(figsize=(16, 8))
 fig, axs = plt.subplots(1, 2, figsize=(12, 6))
 
                         #rysowanie histogramu
-axs[0].hist(myData[columns[3]], bins=10, alpha=0.5, edgecolor='black', color='green')
+axs[0].hist(myData[columns[3]], bins=8, alpha=0.5, edgecolor='black', color='green')
 #wlacza siatke
 axs[0].grid(True, linewidth=0.5)
 #opisy z wlasciwosciami
