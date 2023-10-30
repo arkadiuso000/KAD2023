@@ -19,7 +19,8 @@ myData['species'] = myData['species'].replace(mapowanie_gatunkow)
 
 #tworzy folder
 try:
-    os.mkdir("./wykresy")
+    #zabezpieczenie przed łindołsem
+    os.mkdir(os.path.join(".", "wykresy"))
 except FileExistsError:
     pass
 #🤌
