@@ -4,6 +4,10 @@ target/
 !**/src/test/**/target/
 
 ### environment ###
+wykresy/wykres1.jpg
+wykresy/wykres2.jpg
+wykresy/wykres3.jpg
+wykresy/wykres4.jpg
 environment
 ### IntelliJ IDEA ###
 .idea
