@@ -1,16 +1,11 @@
-# This is a sample Python script.
+import myFunctions as mf
+import matplotlib.pyplot as plt
+import os
+import numpy as np
+myData = mf.importData("././Dane-20231111/data.csv")
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# plt.figure(figsize=(16, 8))
+plt.scatter(myData["sepal length"], myData["sepal width"], marker="p", )
+# plt.yticks([2.0,2.5,3.0,3.5,4.0,4.5])
+plt.xticks([4,5,6,7,8])
+plt.show()
