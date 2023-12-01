@@ -1,6 +1,6 @@
 import math
 import pandas as pd
-
+import matplotlib.pyplot as plt
 def importData(fileDst):
     columns = ["sepal length", "sepal width", "petal length", "petal width", "species"]
     mapowanie_gatunkow = {
@@ -13,10 +13,16 @@ def importData(fileDst):
     myData['species'] = myData['species'].replace(mapowanie_gatunkow)
     return myData
 
-# def generatePlot(osX, osY,xLabel,yLabel,tittle,xTicks=None,yTics=None):
-
-
-
+def generatePlot(myData, osX, osY,xLabel,yLabel,tittle,xTicks,yTicks):
+    plt.scatter(myData[osX], myData[osY], marker="+", c="green" )
+    plt.xlabel(xLabel)
+    plt.ylabel(yLabel)
+    plt.title(tittle)
+    plt.grid(True,linewidth=0.5)
+    if xTicks != None:
+        plt.xticks(xTicks)
+    if yTicks != None:
+        plt.yticks(yTicks)
 
 def wyznaczMaksimum(lista):
     maksimum = lista[0]
