@@ -13,11 +13,15 @@ def importData(fileDst):
     myData['species'] = myData['species'].replace(mapowanie_gatunkow)
     return myData
 
-def generatePlot(myData, osX, osY,xLabel,yLabel,tittle,xTicks,yTicks):
+def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
+
     plt.scatter(myData[osX], myData[osY], marker="+", c="green" )
     plt.xlabel(xLabel)
     plt.ylabel(yLabel)
-    plt.title(tittle)
+    wspolczynnikKorelacjiPearsona = wyznaczWspolKorelacjiPearsona(myData[osX],myData[osY])
+    zaokraglonyWspolczynnik = round(wspolczynnikKorelacjiPearsona,2)
+    #TODO zrobic ifa na minusowa wartosc !!!!
+    plt.title("r = {}; y = {}x + {}".format(zaokraglonyWspolczynnik,0,0))
     plt.grid(True,linewidth=0.5)
     if xTicks != None:
         plt.xticks(xTicks)
@@ -45,15 +49,24 @@ def wyznaczSredniaArytmetyczna(lista):
     for wartosc in lista:
         suma += wartosc
     return suma / len(lista)
-
-def wyznaczKowariancje(listaX, listaY):
+def wyznaczWspolKorelacjiPearsona(listaX, listaY):
+    kowariancja = wyznaczKowariancje(listaX, listaY)
+    odchylenieStandardoweX = wyznaczOdchylenieStandardowe(listaX)
+    odchylenieStandardoweY = wyznaczOdchylenieStandardowe(listaY)
+    wspolczynnik = kowariancja / (odchylenieStandardoweX * odchylenieStandardoweY)
+    return wspolczynnik
+def wyznaczKowariancje(listaX,listaY):
+    n = len(listaX)
+    if n != len(listaY):
+        raise ValueError("Listy musza miec po tyle samo wartosci do obliczenia Kowariancji")
     sredniaArytX = wyznaczSredniaArytmetyczna(listaX)
     sredniaArytY = wyznaczSredniaArytmetyczna(listaY)
     sumaWartosciXYMinusIchSrednie = 0
-    for i in range(len(listaX) - 1):
+    for i in range(n):
         sumaWartosciXYMinusIchSrednie += ((listaX[i] - sredniaArytX) * (listaY[i] - sredniaArytY))
-    kowariancja = sumaWartosciXYMinusIchSrednie / (len(listaX))
+    kowariancja = sumaWartosciXYMinusIchSrednie / (n-1)
     return kowariancja
+
 def wyznaczWariancje(lista):
     sredniaArytmetyczna = wyznaczSredniaArytmetyczna(lista)
 
