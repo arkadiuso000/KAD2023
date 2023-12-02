@@ -46,15 +46,25 @@ def wyznaczSredniaArytmetyczna(lista):
         suma += wartosc
     return suma / len(lista)
 
-
-def wyznaczOdchylenieStandardowe(lista):
+def wyznaczKowariancje(listaX, listaY):
+    sredniaArytX = wyznaczSredniaArytmetyczna(listaX)
+    sredniaArytY = wyznaczSredniaArytmetyczna(listaY)
+    sumaWartosciXYMinusIchSrednie = 0
+    for i in range(len(listaX) - 1):
+        sumaWartosciXYMinusIchSrednie += ((listaX[i] - sredniaArytX) * (listaY[i] - sredniaArytY))
+    kowariancja = sumaWartosciXYMinusIchSrednie / (len(listaX))
+    return kowariancja
+def wyznaczWariancje(lista):
     sredniaArytmetyczna = wyznaczSredniaArytmetyczna(lista)
 
     sumaKwadratowroznic = 0
     for wartosc in lista:
         sumaKwadratowroznic += (wartosc - sredniaArytmetyczna) ** 2
 
-    odchylenieStandardowe = math.sqrt(sumaKwadratowroznic / (len(lista) - 1))
+    wariancja = sumaKwadratowroznic / (len(lista))
+    return wariancja
+def wyznaczOdchylenieStandardowe(lista):
+    odchylenieStandardowe = math.sqrt(wyznaczWariancje(lista))
     return odchylenieStandardowe
 
 
