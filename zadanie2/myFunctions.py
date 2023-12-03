@@ -37,6 +37,10 @@ def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
         plt.xticks(xTicks)
     if yTicks != None:
         plt.yticks(yTicks)
+    ax = plt.subplot()
+    ax.set_xticklabels(xTicks, fontsize=14)
+    ax.set_yticklabels(yTicks, fontsize=14)
+    # ax.set_xticklabels(x, fontsize=16)
 
 def wyznaczMaksimum(lista):
     maksimum = lista[0]
