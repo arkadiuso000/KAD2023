@@ -24,11 +24,7 @@ def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     rowanieRegresji = wyznaczRownanieRegresjiLiniowej(myData[osX],myData[osY])
     aRound1 = round(rowanieRegresji[0],1)
     bRound1 = round(rowanieRegresji[1],1)
-    #TODO
-    # co z tymi wartosciami?
-    # a = np.polyfit(myData[osX], myData[osY], 1)
-    # print("Moje wspolczynniki: {}\nwspolczynniki z np: {}\n".format(rowanieRegresji,a))
-    # plt.xlim(0, 1)
+
     if (bRound1 < 0):
         plt.title("r = {}; y = {}x - {}".format(zaokraglonyWspolczynnik,aRound1,abs(bRound1)), fontsize=16,)
     else:
