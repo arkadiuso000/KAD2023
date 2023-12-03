@@ -15,7 +15,7 @@ def importData(fileDst):
     return myData
 
 def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
-    plt.figure(figsize=(7, 7))
+    plt.figure(figsize=(10, 7))
     plt.scatter(myData[osX], myData[osY], c="green" )
     plt.xlabel(xLabel, fontsize=16,)
     plt.ylabel(yLabel, fontsize=16,)
@@ -36,7 +36,7 @@ def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     plt.grid(True,linewidth=0.5, alpha=0.45,)
 
     #dodawanie wykresu regresji liniowej
-    plt.plot(myData[osX], aRound1 * myData[osX] + bRound1, color='red', alpha=0.75, )
+    plt.plot(myData[osX], rowanieRegresji[0] * myData[osX] + rowanieRegresji[1], color='red', alpha=0.75, )
     if xTicks != None:
         plt.xticks(xTicks)
     if yTicks != None:
@@ -83,7 +83,10 @@ def wyznaczKowariancje(listaX,listaY):
     sumaWartosciXYMinusIchSrednie = 0
     for i in range(n):
         sumaWartosciXYMinusIchSrednie += ((listaX[i] - sredniaArytX) * (listaY[i] - sredniaArytY))
-    kowariancja = sumaWartosciXYMinusIchSrednie / (n-1)
+    kowariancja = sumaWartosciXYMinusIchSrednie / (n)
+    #tutaj ogolnie powinno byc -1 aby kowariancja byla sama w sobie git
+    #lecz do pearsona potrzebujemy n-1 gdyz tak wynika z przeksztalcen
+    #aby to uzyc w przyszlosci musze to poprawic!
     return kowariancja
 
 def wyznaczWariancje(lista):
