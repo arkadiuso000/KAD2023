@@ -15,10 +15,10 @@ def importData(fileDst):
     return myData
 
 def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
-    plt.figure(figsize=(10, 10))
-    plt.scatter(myData[osX], myData[osY], marker="+", c="green" )
-    plt.xlabel(xLabel, fontsize=16, fontweight='bold')
-    plt.ylabel(yLabel, fontsize=16, fontweight='bold')
+    plt.figure(figsize=(7, 7))
+    plt.scatter(myData[osX], myData[osY], c="green" )
+    plt.xlabel(xLabel, fontsize=16,)
+    plt.ylabel(yLabel, fontsize=16,)
     wspolczynnikKorelacjiPearsona = wyznaczWspolKorelacjiPearsona(myData[osX],myData[osY])
     zaokraglonyWspolczynnik = round(wspolczynnikKorelacjiPearsona,2)
     rowanieRegresji = wyznaczRownanieRegresjiLiniowej(myData[osX],myData[osY])
@@ -30,10 +30,10 @@ def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     # print("Moje wspolczynniki: {}\nwspolczynniki z np: {}\n".format(rowanieRegresji,a))
     # plt.xlim(0, 1)
     if (bRound1 < 0):
-        plt.title("r = {}; y = {}x - {}".format(zaokraglonyWspolczynnik,aRound1,abs(bRound1)), fontsize=20, fontweight='bold')
+        plt.title("r = {}; y = {}x - {}".format(zaokraglonyWspolczynnik,aRound1,abs(bRound1)), fontsize=16,)
     else:
-        plt.title("r = {}; y = {}x + {}".format(zaokraglonyWspolczynnik,aRound1,bRound1), fontsize=20, fontweight='bold')
-    plt.grid(True,linewidth=0.5)
+        plt.title("r = {}; y = {}x + {}".format(zaokraglonyWspolczynnik,aRound1,bRound1), fontsize=16,)
+    plt.grid(True,linewidth=0.5, alpha=0.45,)
 
     #dodawanie wykresu regresji liniowej
     plt.plot(myData[osX], aRound1 * myData[osX] + bRound1, color='red', alpha=0.75, )

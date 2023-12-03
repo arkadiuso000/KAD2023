@@ -15,7 +15,7 @@ myData = mf.importData("././Dane-20231111/data.csv")
 #1st plot
 #TODO
 # czy dac tu podzialke jak w przykladzie czy nie?
-mf.generatePlot(myData,"sepal length", "sepal width", "Długość działki kielicha (cm)","Szerokość dzialki kielicha (cm)",list(np.linspace(4.0,8.0,num=5)), list(np.linspace(2.0,4.5,num=6)))
+mf.generatePlot(myData,"sepal length", "sepal width", "Długość działki kielicha (cm)","Szerokość dzialki kielicha (cm)",list(np.linspace(4.0,8.0,num=9)), list(np.linspace(2.0,4.5,num=6)))
 plt.savefig('./wykresy/wykres1.jpg')
 # plt.show()
 
