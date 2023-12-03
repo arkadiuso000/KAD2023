@@ -1,6 +1,7 @@
 import math
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 def importData(fileDst):
     columns = ["sepal length", "sepal width", "petal length", "petal width", "species"]
     mapowanie_gatunkow = {
@@ -14,15 +15,28 @@ def importData(fileDst):
     return myData
 
 def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
-
+    plt.figure(figsize=(10, 10))
     plt.scatter(myData[osX], myData[osY], marker="+", c="green" )
-    plt.xlabel(xLabel)
-    plt.ylabel(yLabel)
+    plt.xlabel(xLabel, fontsize=16, fontweight='bold')
+    plt.ylabel(yLabel, fontsize=16, fontweight='bold')
     wspolczynnikKorelacjiPearsona = wyznaczWspolKorelacjiPearsona(myData[osX],myData[osY])
     zaokraglonyWspolczynnik = round(wspolczynnikKorelacjiPearsona,2)
-    #TODO zrobic ifa na minusowa wartosc !!!!
-    plt.title("r = {}; y = {}x + {}".format(zaokraglonyWspolczynnik,0,0))
+    rowanieRegresji = wyznaczRownanieRegresjiLiniowej(myData[osX],myData[osY])
+    aRound1 = round(rowanieRegresji[0],1)
+    bRound1 = round(rowanieRegresji[1],1)
+    #TODO
+    # co z tymi wartosciami?
+    # a = np.polyfit(myData[osX], myData[osY], 1)
+    # print("Moje wspolczynniki: {}\nwspolczynniki z np: {}\n".format(rowanieRegresji,a))
+    # plt.xlim(0, 1)
+    if (bRound1 < 0):
+        plt.title("r = {}; y = {}x - {}".format(zaokraglonyWspolczynnik,aRound1,abs(bRound1)), fontsize=20, fontweight='bold')
+    else:
+        plt.title("r = {}; y = {}x + {}".format(zaokraglonyWspolczynnik,aRound1,bRound1), fontsize=20, fontweight='bold')
     plt.grid(True,linewidth=0.5)
+
+    #dodawanie wykresu regresji liniowej
+    plt.plot(myData[osX], aRound1 * myData[osX] + bRound1, color='red', alpha=0.75, )
     if xTicks != None:
         plt.xticks(xTicks)
     if yTicks != None:
@@ -49,6 +63,11 @@ def wyznaczSredniaArytmetyczna(lista):
     for wartosc in lista:
         suma += wartosc
     return suma / len(lista)
+
+def wyznaczRownanieRegresjiLiniowej(listaX, listaY):
+    a = wyznaczKowariancje(listaX,listaY) / wyznaczWariancje(listaX)
+    b = wyznaczSredniaArytmetyczna(listaY) - a * wyznaczSredniaArytmetyczna(listaX)
+    return (a,b)
 def wyznaczWspolKorelacjiPearsona(listaX, listaY):
     kowariancja = wyznaczKowariancje(listaX, listaY)
     odchylenieStandardoweX = wyznaczOdchylenieStandardowe(listaX)
