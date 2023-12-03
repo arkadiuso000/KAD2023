@@ -17,8 +17,8 @@ def importData(fileDst):
 def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     plt.figure(figsize=(10, 7))
     plt.scatter(myData[osX], myData[osY], c="green" )
-    plt.xlabel(xLabel, fontsize=16,)
-    plt.ylabel(yLabel, fontsize=16,)
+    plt.xlabel(xLabel, fontsize=20,)
+    plt.ylabel(yLabel, fontsize=20,)
     wspolczynnikKorelacjiPearsona = wyznaczWspolKorelacjiPearsona(myData[osX],myData[osY])
     zaokraglonyWspolczynnik = round(wspolczynnikKorelacjiPearsona,2)
     rowanieRegresji = wyznaczRownanieRegresjiLiniowej(myData[osX],myData[osY])
@@ -26,9 +26,9 @@ def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     bRound1 = round(rowanieRegresji[1],1)
 
     if (bRound1 < 0):
-        plt.title("r = {}; y = {}x - {}".format(zaokraglonyWspolczynnik,aRound1,abs(bRound1)), fontsize=16,)
+        plt.title("r = {}; y = {}x - {}".format(zaokraglonyWspolczynnik,aRound1,abs(bRound1)), fontsize=20,)
     else:
-        plt.title("r = {}; y = {}x + {}".format(zaokraglonyWspolczynnik,aRound1,bRound1), fontsize=16,)
+        plt.title("r = {}; y = {}x + {}".format(zaokraglonyWspolczynnik,aRound1,bRound1), fontsize=20,)
     plt.grid(True,linewidth=0.5, alpha=0.45,)
 
     #dodawanie wykresu regresji liniowej
@@ -38,8 +38,8 @@ def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     if yTicks != None:
         plt.yticks(yTicks)
     ax = plt.subplot()
-    ax.set_xticklabels(xTicks, fontsize=14)
-    ax.set_yticklabels(yTicks, fontsize=14)
+    ax.set_xticklabels(xTicks, fontsize=16)
+    ax.set_yticklabels(yTicks, fontsize=16)
     # ax.set_xticklabels(x, fontsize=16)
 
 def wyznaczMaksimum(lista):
