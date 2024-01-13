@@ -12,7 +12,6 @@ def kSrednich(dane, k):
     while True:
         poprzednieCentroidy = centroidy
         klastry = przypiszKlastry(dane, centroidy)
-        print(klastry)
         centroidy = aktualizacjaCentroidow(dane, klastry, k)
 
         if warunekStopu(poprzednieCentroidy, centroidy):
@@ -57,15 +56,17 @@ def aktualizacjaCentroidow(punkty, klastry, k):
     for i in range(k):
         noweCentroidy.append([0,0])
         liczbyWKlastrach.append([0])
-
     for punkt, klaster in zip(punkty, klastry):
 
         noweCentroidy[klaster][0] += punkt[0]
         noweCentroidy[klaster][1] += punkt[1]
-        liczbyWKlastrach[klaster] += 1
+        liczbyWKlastrach[klaster][0] += 1
 
     for i, (x,y) in enumerate(noweCentroidy):
-        noweCentroidy[i] =(x / liczbyWKlastrach[i], y / liczbyWKlastrach[i])
+        #nie liczymy centroidow dla pustych klastrow
+        if liczbyWKlastrach[i][0] != 0:
+            noweCentroidy[i] =(x / liczbyWKlastrach[i][0], y / liczbyWKlastrach[i][0])
+
     return noweCentroidy
 
 def warunekStopu(poprzednieCentroidy, centroidy, prog=1e-5):

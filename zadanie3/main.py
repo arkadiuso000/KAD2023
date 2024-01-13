@@ -15,4 +15,5 @@ myData = mf.importData("././Dane-20231111/data.csv")
 
 a = myData[['sepal length', 'sepal width']]
 # print(a.values)
-output = mf.kSrednich(a.values,3)
+output = mf.kSrednich(a.values,10)
+print(output)
