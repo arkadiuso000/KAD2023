@@ -8,15 +8,27 @@ import numpy as np
 def kSrednich(dane, k):
     centroidy = inicjacjaCentroidow(dane, k)
     # print(centroidy)
-
+    poprzedniePrzypisania = []
+    for i in range(k):
+        poprzedniePrzypisania.append([0,0])
     while True:
-        poprzednieCentroidy = centroidy
+
         klastry = przypiszKlastry(dane, centroidy)
         centroidy = aktualizacjaCentroidow(dane, klastry, k)
 
-        if warunekStopu(poprzednieCentroidy, centroidy):
+        aktualnePrzypisania = unikalneWartosci(klastry)
+        # print("aktualnePrzupisania = {}\npoprzedniePrzypisania = {}".format(aktualnePrzypisania,poprzedniePrzypisania))
+        if warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
             break
-        return klastry
+        else:
+            poprzedniePrzypisania = aktualnePrzypisania
+    return klastry
+def unikalneWartosci(lista):
+    output = []
+    unikalne = list(set(lista))
+    for unikalnaWartosc in unikalne:
+        output.append([unikalnaWartosc, lista.count(unikalnaWartosc)])
+    return output
 def inicjacjaCentroidow(dane, k):
     xMax = yMax = float(-9999)
     xMin = yMin = float(9999)
@@ -69,11 +81,11 @@ def aktualizacjaCentroidow(punkty, klastry, k):
 
     return noweCentroidy
 
-def warunekStopu(poprzednieCentroidy, centroidy, prog=1e-5):
-    totalMovement = 0
-    for old_point, new_point in zip(poprzednieCentroidy, centroidy):
-        totalMovement += obliczOdleglosc(old_point, new_point)
-    return totalMovement < prog
+def warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
+    print("aktualnePrzupisania = {}\npoprzedniePrzypisania = {}".format(aktualnePrzypisania, poprzedniePrzypisania))
+    print(poprzedniePrzypisania == aktualnePrzypisania)
+    return poprzedniePrzypisania == aktualnePrzypisania
+
 
 
 # def kSrednich (dane, k):
