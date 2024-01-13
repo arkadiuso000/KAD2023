@@ -1,7 +1,116 @@
 import math
+import random
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+
+def kSrednich(dane, k):
+    centroidy = inicjacjaCentroidow(dane, k)
+    # print(centroidy)
+
+    while True:
+        poprzednieCentroidy = centroidy
+        klastry = przypiszKlastry(dane, centroidy)
+        print(klastry)
+        centroidy = aktualizacjaCentroidow(dane, klastry, k)
+
+        if warunekStopu(poprzednieCentroidy, centroidy):
+            break
+        return klastry
+def inicjacjaCentroidow(dane, k):
+    xMax = yMax = float(-9999)
+    xMin = yMin = float(9999)
+    for punkt in dane:
+        xMax = max(punkt[0], xMax)
+        yMax = max(punkt[1], yMax)
+        xMin = min(punkt[0], xMin)
+        yMin = min(punkt[1], yMin)
+    centroidy = []
+    for i in range(k):
+        centroidy.append([losowaWartosc(xMin, xMax), losowaWartosc(yMin, yMax)])
+    return centroidy
+
+def losowaWartosc(minimum, maximum):
+    return (maximum - minimum) + minimum * random.random()
+
+def przypiszKlastry(dane, centroidy):
+    klastry = []
+    for punkt in dane:
+        najmniejszaOdleglosc = float('inf')
+        klaster = None
+        for i, centroid in enumerate(centroidy):
+            odleglosc = obliczOdleglosc(punkt, centroid)
+            if najmniejszaOdleglosc > odleglosc:
+                najmniejszaOdleglosc = odleglosc
+                klaster = i
+        klastry.append(klaster)
+    return klastry
+
+def obliczOdleglosc(punkt1, punkt2):
+    odleglosc = math.sqrt((punkt1[0] - punkt2[0]) ** 2 + (punkt1[1] - punkt2[1]) ** 2)
+    return odleglosc
+
+def aktualizacjaCentroidow(punkty, klastry, k):
+    noweCentroidy = []
+    liczbyWKlastrach = []
+    for i in range(k):
+        noweCentroidy.append([0,0])
+        liczbyWKlastrach.append([0])
+
+    for punkt, klaster in zip(punkty, klastry):
+
+        noweCentroidy[klaster][0] += punkt[0]
+        noweCentroidy[klaster][1] += punkt[1]
+        liczbyWKlastrach[klaster] += 1
+
+    for i, (x,y) in enumerate(noweCentroidy):
+        noweCentroidy[i] =(x / liczbyWKlastrach[i], y / liczbyWKlastrach[i])
+    return noweCentroidy
+
+def warunekStopu(poprzednieCentroidy, centroidy, prog=1e-5):
+    totalMovement = 0
+    for old_point, new_point in zip(poprzednieCentroidy, centroidy):
+        totalMovement += obliczOdleglosc(old_point, new_point)
+    return totalMovement < prog
+
+
+# def kSrednich (dane, k):
+#
+#
+#     return None
+#
+# def aktualizacjaCendtroidow(dane, k, klastry):
+#     noweCentroidy = []
+#     temp = pd.concat([dane, pd.DataFrame(klastry, columns=['klastry'])], axis=1)
+#     for c in range(k):
+#         klastryDane = temp[temp['klastry'] == c].drop('klastry', axis=1)
+#         centroid = klastryDane.mean(axis=0)
+#         srednia = 0
+#         for i in klastryDane.index:
+#             srednia += i
+#
+#         print("funkcja mean: {}.".format(centroid.values))
+#         print("moje {}".format(srednia))
+#         noweCentroidy.append(centroid)
+#     return noweCentroidy
+# def przypiszKlastry(dane, centroidy):
+#     klastry = []
+#     for index, row in dane.iterrows(): #interrows zwraca nam indek, dane w formie [a,b], dlatego uzywamy tylko row cnie
+#         distances = [math.sqrt(sum((row - centroid) ** 2)) for centroid in centroidy]
+#         klaster = distances.index(min(distances)) #i tutaj dziala na takiej zasadzie ze szuka nam najmniejszego dystansu na liscie i potem zapisuje jego indeks - to jest numer klastara cnie
+#         klastry.append(klaster)
+#     return klastry
+# def zainicjujCentroidy (dane, k):
+#     #dane podajemy w takim formacie
+#     #myData[['sepal length', 'sepal width']]
+#     cendroidy = []
+#     for i in range(k):
+#         cendroidy.append([random.choice(dane.iloc[:,0].values), random.choice(dane.iloc[:,0].values)])
+#     return cendroidy
+
+
+#funkcje z poprzednich zadan
 def importData(fileDst):
     columns = ["sepal length", "sepal width", "petal length", "petal width", "species"]
     mapowanie_gatunkow = {
@@ -13,7 +122,6 @@ def importData(fileDst):
     # zamieniam 0,1,2 na odpowiednie nazwy
     myData['species'] = myData['species'].replace(mapowanie_gatunkow)
     return myData
-
 def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     plt.figure(figsize=(10, 7))
     plt.scatter(myData[osX], myData[osY], c="green" )
@@ -41,29 +149,23 @@ def generatePlot(myData, osX, osY,xLabel,yLabel,xTicks,yTicks):
     ax.set_xticklabels(xTicks, fontsize=16)
     ax.set_yticklabels(yTicks, fontsize=16)
     # ax.set_xticklabels(x, fontsize=16)
-
 def wyznaczMaksimum(lista):
     maksimum = lista[0]
     for wartosc in lista:
         if wartosc > maksimum:
             maksimum = wartosc
     return maksimum
-
-
 def wyznaczMinimum(lista):
     maksimum = lista[0]
     for wartosc in lista:
         if wartosc < maksimum:
             maksimum = wartosc
     return maksimum
-
-
 def wyznaczSredniaArytmetyczna(lista):
     suma = 0
     for wartosc in lista:
         suma += wartosc
     return suma / len(lista)
-
 def wyznaczRownanieRegresjiLiniowej(listaX, listaY):
     a = wyznaczKowariancje(listaX,listaY) / wyznaczWariancje(listaX)
     b = wyznaczSredniaArytmetyczna(listaY) - a * wyznaczSredniaArytmetyczna(listaX)
@@ -88,7 +190,6 @@ def wyznaczKowariancje(listaX,listaY):
     #lecz do pearsona potrzebujemy n-1 gdyz tak wynika z przeksztalcen
     #aby to uzyc w przyszlosci musze to poprawic!
     return kowariancja
-
 def wyznaczWariancje(lista):
     sredniaArytmetyczna = wyznaczSredniaArytmetyczna(lista)
 
@@ -101,8 +202,6 @@ def wyznaczWariancje(lista):
 def wyznaczOdchylenieStandardowe(lista):
     odchylenieStandardowe = math.sqrt(wyznaczWariancje(lista))
     return odchylenieStandardowe
-
-
 def wyznaczMediane(lista):
     posortowana_lista = sorted(lista)
 
@@ -113,8 +212,6 @@ def wyznaczMediane(lista):
         return (posortowana_lista[srodek] + posortowana_lista[srodek + 1]) / 2
     else:
         return float(posortowana_lista[srodek])
-
-
 def wyznaczTrzyKwartyle(lista):
     # wg prezentacji na wykladzie: W_2_Statystyka_Miary_położenia strona 73
     # wystarczy wywolac metode mediane na polowach posortowanej listy
