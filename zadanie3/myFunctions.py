@@ -172,8 +172,7 @@ def save_unique_figure(base_filename, extension='.jpg', directory='./wykresy'):
 
     # Zapisanie wykresu z unikalną nazwą pliku
     plt.savefig(os.path.join(directory, filename))
-# Przykładowe użycie funkcji:
-save_unique_figure('wykres')
+    print(f"Zapisano wykres jako: {filename}")
 
 #funkcje z poprzednich zadan
 def importData(fileDst):
