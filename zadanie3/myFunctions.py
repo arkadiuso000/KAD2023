@@ -7,7 +7,10 @@ import numpy as np
 from matplotlib import ticker
 import os
 
+#zad 3 podpunkt 2
 
+
+#zad 3 podpunkt 1
 def kSrednich( k,daneDoWykresu,xTableName,yTableName, xAxisTitle, yAxisTitle,czyPokazacWykres=False):
     dane = daneDoWykresu[[xTableName,yTableName]].copy().values
     centroidy = inicjacjaCentroidow(dane, k)
@@ -63,14 +66,16 @@ def generujWykresWCSSIteracje(dane):
     y2 = dane[1]
 
     fig, ax1 = plt.subplots()
-    ax1.set_xlabel("K")
-    ax1.set_ylabel("Iteracje")
-    ax1.plot(x, y1, linewidth=2, color='red')
+    ax1.set_xlabel("Wartość parametru K", fontsize=12)
+    ax1.set_ylabel("Ilość Iteracji", fontsize=12)
+    ax1.plot(x, y1, linewidth=2, color='#8fe3c1')
 
     ax2 = ax1.twinx()
-    ax2.set_ylabel("WCSS")
-    ax2.plot(x, y2, linewidth=2, color='blue')
-    fig.tight_layout()
+    ax2.set_ylabel("Wskażnik WCSS", fontsize=12)
+    ax2.plot(x, y2, linewidth=2, color='#8fd4f7')
+    # fig.tight_layout()
+
+    ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     save_unique_figure('wykres')
     plt.show()
 def liczWCSS(dane, centroidy, klastry):
@@ -81,8 +86,6 @@ def liczWCSS(dane, centroidy, klastry):
         centroid = centroidy[klaster]
         WCSS += obliczOdleglosc(centroid,punkt)
     return WCSS
-
-
 def okrojDaneWCSS(dane):
     okrojoneIlosci = []
     okrojoneWCSS = []
@@ -117,10 +120,8 @@ def inicjacjaCentroidow(dane, k):
     for i in range(k):
         centroidy.append([losowaWartosc(xMin, xMax), losowaWartosc(yMin, yMax)])
     return centroidy
-
 def losowaWartosc(minimum, maximum):
     return (maximum - minimum) + minimum * random.random()
-
 def przypiszKlastry(dane, centroidy):
     klastry = []
     for punkt in dane:
@@ -133,11 +134,9 @@ def przypiszKlastry(dane, centroidy):
                 klaster = i
         klastry.append(klaster)
     return klastry
-
 def obliczOdleglosc(punkt1, punkt2):
     odleglosc = math.sqrt((punkt1[0] - punkt2[0]) ** 2 + (punkt1[1] - punkt2[1]) ** 2)
     return odleglosc
-
 def aktualizacjaCentroidow(punkty, klastry, k):
     noweCentroidy = []
     liczbyWKlastrach = []
@@ -156,11 +155,8 @@ def aktualizacjaCentroidow(punkty, klastry, k):
             noweCentroidy[i] =(x / liczbyWKlastrach[i][0], y / liczbyWKlastrach[i][0])
 
     return noweCentroidy
-
 def warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
     return poprzedniePrzypisania == aktualnePrzypisania
-
-
 def save_unique_figure(base_filename, extension='.jpg', directory='./wykresy'):
     counter = 1
     filename = f"{base_filename}{extension}"
@@ -176,9 +172,6 @@ def save_unique_figure(base_filename, extension='.jpg', directory='./wykresy'):
 
     # Zapisanie wykresu z unikalną nazwą pliku
     plt.savefig(os.path.join(directory, filename))
-    print(f"Zapisano wykres jako: {filename}")
-
-
 # Przykładowe użycie funkcji:
 save_unique_figure('wykres')
 
