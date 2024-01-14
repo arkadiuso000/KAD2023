@@ -14,24 +14,59 @@ myData = mf.importData("././Dane-20231111/data.csv")
 
 
 a = myData[['sepal length', 'sepal width']].copy()
-output = mf.kSrednich(a.values,3)
+daneWCSS = []
+for k in range(2,11):
+    if k == 3:
+        # 1st plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal length", "sepal width", "Długość działki kielicha (cm)",
+                     "Szerokość dzialki kielicha (cm)", True))
 
-#zlaczylem dane
-a.loc[:,'cluster'] = output
+        # 2nd plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal length", "petal length", "Długość działki kielicha (cm)", "Długość płatka (cm)",
+                                     True))
 
-# Utwórz wykres rozproszenia, gdzie kolor zależy od przypisania do klastra
-fig, ax = plt.subplots()
-for cluster_number in a['cluster'].unique():
-    cluster = a[a['cluster'] == cluster_number]
-    ax.scatter(cluster['sepal length'], cluster['sepal width'], label=f'Cluster {cluster_number}')
+        # 3rd plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal length", "petal width", "Długość działki kielicha (cm)", "Szerokość płatka (cm)",
+                                     True))
 
-# Ustaw etykiety i tytuł wykresu
-ax.set_title('Klastry długości i szerokości działki kielicha')
-ax.set_xlabel('Długość działki kielicha (cm)')
-ax.set_ylabel('Szerokość działki kielicha (cm)')
+        # 4th plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal width", "petal length", "Szerokość działki kielicha (cm)", "Długość płatka (cm)",
+                                     True))
 
-# Dodaj legendę
-ax.legend()
+        # 5th plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal width", "petal width", "Szerokość działki kielicha (cm)",
+                     "Szerokość płatka (cm)", True))
 
-# Pokaż wykres
-plt.show()
+        # 6th plot
+        daneWCSS.append(mf.kSrednich(k, myData, "petal length", "petal width", "Długość płatka (cm)", "Szerokość płatka (cm)", True))
+    else:
+        # 1st plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal length", "sepal width", "Długość działki kielicha (cm)",
+                                      "Szerokość dzialki kielicha (cm)"))
+
+        # 2nd plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal length", "petal length", "Długość działki kielicha (cm)",
+                                      "Długość płatka (cm)"))
+
+        # 3rd plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal length", "petal width", "Długość działki kielicha (cm)",
+                                      "Szerokość płatka (cm)"))
+
+        # 4th plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal width", "petal length", "Szerokość działki kielicha (cm)",
+                                      "Długość płatka (cm)"))
+
+        # 5th plot
+        daneWCSS.append(mf.kSrednich(k, myData, "sepal width", "petal width", "Szerokość działki kielicha (cm)",
+                                      "Szerokość płatka (cm)"))
+
+        # 6th plot
+        daneWCSS.append(
+            mf.kSrednich(k, myData, "petal length", "petal width", "Długość płatka (cm)", "Szerokość płatka (cm)"))
+
+
+noweWCSS = mf.okrojDaneWCSS(daneWCSS)
+#7th wykres
+mf.generujWykresWCSSIteracje(noweWCSS)
+
+

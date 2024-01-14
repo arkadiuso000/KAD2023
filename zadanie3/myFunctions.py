@@ -4,14 +4,20 @@ import random
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import ticker
+import os
 
-def kSrednich(dane, k):
+
+def kSrednich( k,daneDoWykresu,xTableName,yTableName, xAxisTitle, yAxisTitle,czyPokazacWykres=False):
+    dane = daneDoWykresu[[xTableName,yTableName]].copy().values
     centroidy = inicjacjaCentroidow(dane, k)
     # print(centroidy)
     poprzedniePrzypisania = []
+    iloscPetli = 0
     for i in range(k):
         poprzedniePrzypisania.append([0,0])
     while True:
+        iloscPetli += 1
 
         klastry = przypiszKlastry(dane, centroidy)
         centroidy = aktualizacjaCentroidow(dane, klastry, k)
@@ -22,7 +28,77 @@ def kSrednich(dane, k):
             break
         else:
             poprzedniePrzypisania = aktualnePrzypisania
-    return klastry
+
+    WCSS = liczWCSS(dane,centroidy,klastry)
+    noweDane = daneDoWykresu.copy()
+    if czyPokazacWykres:
+        noweDane.loc[:,'cluster'] = klastry
+        generujWykresKSrednich(centroidy,noweDane,xTableName,yTableName, xAxisTitle,yAxisTitle)
+    return [k,iloscPetli, WCSS]
+def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, yAxisTitle):
+    fig, ax = plt.subplots()
+
+    #Rysowanie punktów klastra
+    colors = ['#e82727', '#8fe3c1', '#8fd4f7']  # Lista kolorów dla klastrów
+    for cluster_number in output['cluster'].unique():
+        cluster = output[output['cluster'] == cluster_number]
+        ax.scatter(cluster[xTableName], cluster[yTableName], label=f'Cluster {cluster_number}',
+                   color=colors[cluster_number])
+
+    #Rysowanie centroidów
+    for idx, centroid in enumerate(centroidy):
+        ax.plot(centroid[0], centroid[1], 'X', color=colors[idx], markersize=10, markeredgecolor='black',
+                label=f'Centroid {idx}')
+
+    ax.set_xlabel(xAxisTitle, fontsize=14)
+    ax.set_ylabel(yAxisTitle, fontsize=14)
+    # Formatowanie osi X i Y, aby zawsze używały liczby zmiennoprzecinkowej z jednym miejscem po przecinku
+    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
+    ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
+    save_unique_figure('wykres')
+    plt.show()
+def generujWykresWCSSIteracje(dane):
+    x = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+    y1 = dane[0]
+    y2 = dane[1]
+
+    fig, ax1 = plt.subplots()
+    ax1.set_xlabel("K")
+    ax1.set_ylabel("Iteracje")
+    ax1.plot(x, y1, linewidth=2, color='red')
+
+    ax2 = ax1.twinx()
+    ax2.set_ylabel("WCSS")
+    ax2.plot(x, y2, linewidth=2, color='blue')
+    fig.tight_layout()
+    save_unique_figure('wykres')
+    plt.show()
+def liczWCSS(dane, centroidy, klastry):
+    WCSS = 0
+    for i in range(len(dane)):
+        punkt = dane[i]
+        klaster = klastry[i]
+        centroid = centroidy[klaster]
+        WCSS += obliczOdleglosc(centroid,punkt)
+    return WCSS
+
+
+def okrojDaneWCSS(dane):
+    okrojoneIlosci = []
+    okrojoneWCSS = []
+    for i in range(2, 11):
+        wartosciIlosciPetli = []
+        wartosciWCSS = []
+        for rekord in dane:
+            if rekord[0] == i:
+                wartosciIlosciPetli.append(rekord[1])
+                wartosciWCSS.append(rekord[2])
+
+        sredniaWartoscIlosciPetli = wyznaczSredniaArytmetyczna(wartosciIlosciPetli)
+        sredniaWartoscWCSS = wyznaczSredniaArytmetyczna(wartosciWCSS)
+        okrojoneIlosci.append(sredniaWartoscIlosciPetli)
+        okrojoneWCSS.append(sredniaWartoscWCSS)
+    return [okrojoneIlosci,okrojoneWCSS]
 def unikalneWartosci(lista):
     output = []
     unikalne = list(set(lista))
@@ -82,46 +158,29 @@ def aktualizacjaCentroidow(punkty, klastry, k):
     return noweCentroidy
 
 def warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
-    print("aktualnePrzupisania = {}\npoprzedniePrzypisania = {}".format(aktualnePrzypisania, poprzedniePrzypisania))
-    print(poprzedniePrzypisania == aktualnePrzypisania)
     return poprzedniePrzypisania == aktualnePrzypisania
 
 
+def save_unique_figure(base_filename, extension='.jpg', directory='./wykresy'):
+    counter = 1
+    filename = f"{base_filename}{extension}"
+    # Dodaj liczbę do nazwy pliku, jeśli plik już istnieje
+    while os.path.exists(os.path.join(directory, filename)):
+        filename = f"{base_filename}_{counter}{extension}"
+        counter += 1
 
-# def kSrednich (dane, k):
-#
-#
-#     return None
-#
-# def aktualizacjaCendtroidow(dane, k, klastry):
-#     noweCentroidy = []
-#     temp = pd.concat([dane, pd.DataFrame(klastry, columns=['klastry'])], axis=1)
-#     for c in range(k):
-#         klastryDane = temp[temp['klastry'] == c].drop('klastry', axis=1)
-#         centroid = klastryDane.mean(axis=0)
-#         srednia = 0
-#         for i in klastryDane.index:
-#             srednia += i
-#
-#         print("funkcja mean: {}.".format(centroid.values))
-#         print("moje {}".format(srednia))
-#         noweCentroidy.append(centroid)
-#     return noweCentroidy
-# def przypiszKlastry(dane, centroidy):
-#     klastry = []
-#     for index, row in dane.iterrows(): #interrows zwraca nam indek, dane w formie [a,b], dlatego uzywamy tylko row cnie
-#         distances = [math.sqrt(sum((row - centroid) ** 2)) for centroid in centroidy]
-#         klaster = distances.index(min(distances)) #i tutaj dziala na takiej zasadzie ze szuka nam najmniejszego dystansu na liscie i potem zapisuje jego indeks - to jest numer klastara cnie
-#         klastry.append(klaster)
-#     return klastry
-# def zainicjujCentroidy (dane, k):
-#     #dane podajemy w takim formacie
-#     #myData[['sepal length', 'sepal width']]
-#     cendroidy = []
-#     for i in range(k):
-#         cendroidy.append([random.choice(dane.iloc[:,0].values), random.choice(dane.iloc[:,0].values)])
-#     return cendroidy
+    # Tworzenie przykładowego wykresu do zapisania
+    plt.figure()
+    plt.plot([1, 2, 3], [4, 5, 6])  # Tutaj dodaj kod generujący wykres
+    plt.close()  # Zamknij figurę po zapisaniu
 
+    # Zapisanie wykresu z unikalną nazwą pliku
+    plt.savefig(os.path.join(directory, filename))
+    print(f"Zapisano wykres jako: {filename}")
+
+
+# Przykładowe użycie funkcji:
+save_unique_figure('wykres')
 
 #funkcje z poprzednich zadan
 def importData(fileDst):
