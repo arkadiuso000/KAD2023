@@ -1,116 +1,221 @@
 import math
 import random
-
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib import ticker
 import os
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
 
 #zad 3 podpunkt 2
+def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
+    #wybieramy wszystkie cechy
+    trainX = dataTrainX.values
+    trainY = dataTrainY.values
+    testX = dataTestX.values
+    testY = dataTestY.values
 
-def kNajblizszychSasiadow(punkt, dane, kategorie, k):
-
-    dane = dane.copy()
-    kategorie = kategorie.copy()
-    if len(punkt) == 2:
-        dane = normalizujZbior(dane)
-    #problem remisu rozwiazujemy poprzez zwiekszenie k o 1
-    while True:
-        kategorieSasiadow = szukajSasiadow(punkt,dane,kategorie, k)
-        kategoria = najczestrzaWartosc(kategorieSasiadow)
-        if kategoria != None:
-            break
-        k += 1
-        if k >= len(dane[0]):
-            break
-    return kategoria
-def szukajSasiadow(punkt, dane, kategorie, k):
-
-    noweDane = []
-    for i in range(len(dane[0])):
-        porcjaDanych = []
-        for j in range(len(dane)):
-            porcjaDanych.append(dane[j][i])
-        noweDane.append(porcjaDanych)
-    dane = noweDane
-
-    liczbaWymiarow = len(punkt)
-
-    sasiedzi = []
-    kategorieSasiadow = []
-
-    for i in range(0, k):
-        idNajblizszegoSasiada = None
-        najkrotszyDystans = None
-
-        for j in range (0, len(dane)):
-            dystans = 0
-            for wymiar in range(0,liczbaWymiarow):
-
-                dystans += (punkt[wymiar] - dane[j][wymiar])**2
-            dystans = math.sqrt(dystans)
-
-            if najkrotszyDystans == None:
-                najkrotszyDystans = dystans
-                idNajblizszegoSasiada = j
-            elif najkrotszyDystans > dystans:
-                najkrotszyDystans = dystans
-                idNajblizszegoSasiada = j
-
-        sasiedzi.append(dane[idNajblizszegoSasiada])
-        kategorieSasiadow.append(kategorie[idNajblizszegoSasiada])
-
-        dane.remove(dane[idNajblizszegoSasiada])
-        kategorie.remove(kategorie[idNajblizszegoSasiada])
-    return kategorieSasiadow, sasiedzi
+    #tutaj normalizujemy dane
+    scaler = StandardScaler()
+    trainX = scaler.fit_transform(trainX)
+    testX = scaler.transform(testX)
 
 
-def normalizujZbior(dane):
-    znormalizowaneX = []
-    znormalizowaneY = []
-    listaX = []
-    listaY = []
-    for i in range(len(dane)):
-        listaX.append(dane[i][0])
-        listaY.append(dane[i][1])
+    listaDokladnosci = []
+
+    for k in range(1, 16):
+        #tworze i trenuje
+        knn = KNeighborsClassifier(n_neighbors=k)
+        knn.fit(trainX, trainY)
+
+        # Przewidywanie etykiet dla danych testowych
+        dopasowania = knn.predict(testX)
+
+        # Obliczanie i przechowywanie dokładności
+        dokladnosc = accuracy_score(testY, dopasowania)
+        listaDokladnosci.append(dokladnosc)
+
+    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodaje bo lista indexuje od 0
+
+    # Utworzenie macierzy pomyłek dla najlepszego k
+    najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
+    najlepszeKNN.fit(trainX, trainY)
+    najlepszeDopasowania = najlepszeKNN.predict(testX)
+    macierzPomylekDlaNajlepszegoK = confusion_matrix(testY, najlepszeDopasowania)
+
+    # Rysowanie wykresu dokładności
+    # Rysowanie wykresu słupkowego dokładności
+    plt.figure(figsize=(12, 8))
+    plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
+    plt.xlabel('Liczba sąsiadów k')
+    plt.ylabel('Dokładność [%]')
+    plt.xticks(range(1, 16))
+    plt.yticks(range(0, 110, 10))
+    plt.grid(axis='y', linestyle='--', linewidth=0.7)
+    save_unique_figure('wykres')
+    plt.show()
 
 
-    minimalnaWartoscX = wyznaczMinimum(listaX)
-    maksymalnaWartoscX = wyznaczMaksimum(listaX)
-    minimalnaWartoscY = wyznaczMinimum(listaY)
-    maksymalnaWartoscY = wyznaczMaksimum(listaY)
+    print("Najlepsza wartość k:", najlepszeK)
+    print("Macierz pomyłek dla najlepszego k:")
+    print(macierzPomylekDlaNajlepszegoK)
+def podpunkt2WszystkieCechy(dataTrain,dataTest):
+    #wybieramy wszystkie cechy
+    trainX = dataTrain.iloc[:, :-1].values
+    trainY = dataTrain.iloc[:, -1].values
+    testX = dataTest.iloc[:, :-1].values
+    testY = dataTest.iloc[:, -1].values
 
-    for i in range(len(dane)):
-        znormalizowaneX.append((listaX[i] - minimalnaWartoscX)/(maksymalnaWartoscX - minimalnaWartoscX))
-        znormalizowaneY.append((listaY[i] - minimalnaWartoscY)/(maksymalnaWartoscY - minimalnaWartoscY))
-    return [znormalizowaneX,znormalizowaneY]
-def zlaczZnormlizowaneZbiory(dane):
-    output = []
-    for i in range(len(dane[0])):
-        output.append([dane[0][i],dane[1][i]])
-    return output
-def najczestrzaWartosc(lista):
-    listaUnikalnych = []
+    #tutaj normalizujemy dane
+    scaler = StandardScaler()
+    trainX = scaler.fit_transform(trainX)
+    testX = scaler.transform(testX)
 
-    for i in range(len(lista[0])):
-        if lista[0][i] not in listaUnikalnych:
-            listaUnikalnych.append(lista[0][i])
-    najczestrzaWartosc = ''
-    najwiekszaIlosc = None
-    for i in range(len(listaUnikalnych)):
-        ilosc = lista[0].count(listaUnikalnych[i])
-        if najwiekszaIlosc == None:
-            najwiekszaIlosc = ilosc
-            najczestrzaWartosc = listaUnikalnych[i]
 
-        elif najwiekszaIlosc  < ilosc:
-            najwiekszaIlosc = ilosc
-            najczestrzaWartosc = listaUnikalnych[i]
-        elif najwiekszaIlosc == ilosc:
-            najczestrzaWartosc = None
-    return najczestrzaWartosc
+    listaDokladnosci = []
 
+    for k in range(1, 16):
+        #tworze i trenuje
+        knn = KNeighborsClassifier(n_neighbors=k)
+        knn.fit(trainX, trainY)
+
+        # Przewidywanie etykiet dla danych testowych
+        dopasowania = knn.predict(testX)
+
+        # Obliczanie i przechowywanie dokładności
+        dokladnosc = accuracy_score(testY, dopasowania)
+        listaDokladnosci.append(dokladnosc)
+
+    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodaje bo lista indexuje od 0
+
+    # Utworzenie macierzy pomyłek dla najlepszego k
+    najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
+    najlepszeKNN.fit(trainX, trainY)
+    najlepszeDopasowania = najlepszeKNN.predict(testX)
+    macierzPomylekDlaNajlepszegoK = confusion_matrix(testY, najlepszeDopasowania)
+
+    # Rysowanie wykresu dokładności
+    # Rysowanie wykresu słupkowego dokładności
+    plt.figure(figsize=(12, 8))
+    plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
+    plt.title('Dokładność w procentach dla różnych wartości k')
+    plt.xlabel('Liczba sąsiadów k')
+    plt.ylabel('Dokładność [%]')
+    plt.xticks(range(1, 16))
+    plt.yticks(range(0, 110, 10))
+    plt.grid(axis='y', linestyle='--', linewidth=0.7)
+    save_unique_figure('wykres')
+    plt.show()
+
+    print("Najlepsza wartość k:", najlepszeK)
+    print("Macierz pomyłek dla najlepszego k:")
+    print(macierzPomylekDlaNajlepszegoK)
+
+
+# def kNajblizszychSasiadow(punkt, dane, kategorie, k):
+#
+#     dane = dane.copy()
+#     kategorie = kategorie.copy()
+#     if len(punkt) == 2:
+#         dane = normalizujZbior(dane)
+#     #problem remisu rozwiazujemy poprzez zwiekszenie k o 1
+#     while True:
+#         kategorieSasiadow = szukajSasiadow(punkt,dane,kategorie, k)
+#         kategoria = najczestrzaWartosc(kategorieSasiadow)
+#         if kategoria != None:
+#             break
+#         k += 1
+#         if k >= len(dane[0]):
+#             break
+#     return kategoria
+# def szukajSasiadow(punkt, dane, kategorie, k):
+#
+#     noweDane = []
+#     for i in range(len(dane[0])):
+#         porcjaDanych = []
+#         for j in range(len(dane)):
+#             porcjaDanych.append(dane[j][i])
+#         noweDane.append(porcjaDanych)
+#     dane = noweDane
+#
+#     liczbaWymiarow = len(punkt)
+#
+#     sasiedzi = []
+#     kategorieSasiadow = []
+#
+#     for i in range(0, k):
+#         idNajblizszegoSasiada = None
+#         najkrotszyDystans = None
+#
+#         for j in range (0, len(dane)):
+#             dystans = 0
+#             for wymiar in range(0,liczbaWymiarow):
+#
+#                 dystans += (punkt[wymiar] - dane[j][wymiar])**2
+#             dystans = math.sqrt(dystans)
+#
+#             if najkrotszyDystans == None:
+#                 najkrotszyDystans = dystans
+#                 idNajblizszegoSasiada = j
+#             elif najkrotszyDystans > dystans:
+#                 najkrotszyDystans = dystans
+#                 idNajblizszegoSasiada = j
+#
+#         sasiedzi.append(dane[idNajblizszegoSasiada])
+#         print(len(kategorie), idNajblizszegoSasiada)
+#         kategorieSasiadow.append(kategorie[idNajblizszegoSasiada])
+#
+#         dane.remove(dane[idNajblizszegoSasiada])
+#         kategorie.remove(kategorie[idNajblizszegoSasiada])
+#     return kategorieSasiadow, sasiedzi
+#
+#
+# def normalizujZbior(dane):
+#     znormalizowaneX = []
+#     znormalizowaneY = []
+#     listaX = []
+#     listaY = []
+#     for i in range(len(dane)):
+#         listaX.append(dane[i][0])
+#         listaY.append(dane[i][1])
+#
+#
+#     minimalnaWartoscX = wyznaczMinimum(listaX)
+#     maksymalnaWartoscX = wyznaczMaksimum(listaX)
+#     minimalnaWartoscY = wyznaczMinimum(listaY)
+#     maksymalnaWartoscY = wyznaczMaksimum(listaY)
+#
+#     for i in range(len(dane)):
+#         znormalizowaneX.append((listaX[i] - minimalnaWartoscX)/(maksymalnaWartoscX - minimalnaWartoscX))
+#         znormalizowaneY.append((listaY[i] - minimalnaWartoscY)/(maksymalnaWartoscY - minimalnaWartoscY))
+#     return [znormalizowaneX,znormalizowaneY]
+# def zlaczZnormlizowaneZbiory(dane):
+#     output = []
+#     for i in range(len(dane[0])):
+#         output.append([dane[0][i],dane[1][i]])
+#     return output
+# def najczestrzaWartosc(lista):
+#     listaUnikalnych = []
+#
+#     for i in range(len(lista[0])):
+#         if lista[0][i] not in listaUnikalnych:
+#             listaUnikalnych.append(lista[0][i])
+#     najczestrzaWartosc = ''
+#     najwiekszaIlosc = None
+#     for i in range(len(listaUnikalnych)):
+#         ilosc = lista[0].count(listaUnikalnych[i])
+#         if najwiekszaIlosc == None:
+#             najwiekszaIlosc = ilosc
+#             najczestrzaWartosc = listaUnikalnych[i]
+#
+#         elif najwiekszaIlosc  < ilosc:
+#             najwiekszaIlosc = ilosc
+#             najczestrzaWartosc = listaUnikalnych[i]
+#         elif najwiekszaIlosc == ilosc:
+#             najczestrzaWartosc = None
+#     return najczestrzaWartosc
+#
 
 #zad 3 podpunkt 1
 def kSrednich( k,daneDoWykresu,xTableName,yTableName, xAxisTitle, yAxisTitle,czyPokazacWykres=False):

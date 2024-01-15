@@ -67,21 +67,28 @@ if zad1Flaga:
 
 
     noweWCSS = mf.okrojDaneWCSS(daneWCSS)
-    #7th wykres
+    #7th plot
     mf.generujWykresWCSSIteracje(noweWCSS)
 
 dataTrain = mf.importData("././dane_train_test/data_train.csv")
 dataTest = mf.importData("././dane_train_test/data_test.csv")
-kategorieTrain = dataTrain["species"].values.tolist()
-kategorieTest = dataTest["species"].values.tolist()
-dataTestAsList = mf.zlaczZnormlizowaneZbiory(mf.normalizujZbior(dataTest[["sepal length","sepal width"]].values.tolist()))
-
-for k in range(1,16):
 
 
-    for i in range(len(dataTestAsList)):
-        punkt = dataTestAsList[i]
-        przypisanie = mf.kNajblizszychSasiadow(punkt, dataTrain, kategorieTrain, k)
-        oryginalnaKategoria = kategorieTest[i]
-        print(oryginalnaKategoria, przypisanie)
+#podpunkt 2
+#8th plot
+mf.podpunkt2WszystkieCechy(dataTrain, dataTest)
+#9th plot
+mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "sepal width"]], dataTrain["species"], dataTest[["sepal length", "sepal width"]], dataTest["species"])
+#10th plot
+mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "petal length"]], dataTrain["species"], dataTest[["sepal length", "petal length"]], dataTest["species"])
+#11th plot
+mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "petal width"]], dataTrain["species"], dataTest[["sepal length", "petal width"]], dataTest["species"])
+#12th plot
+mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal width", "petal length"]], dataTrain["species"], dataTest[["sepal width", "petal length"]], dataTest["species"])
+#13th
+mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal width", "petal width"]], dataTrain["species"], dataTest[["sepal width", "petal width"]], dataTest["species"])
+#14th
+mf.podpunkt2PoszczegolneCechy(dataTrain[["petal length", "petal width"]], dataTrain["species"], dataTest[["petal length", "petal width"]], dataTest["species"])
+
+
 
