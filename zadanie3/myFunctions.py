@@ -9,6 +9,68 @@ import os
 
 #zad 3 podpunkt 2
 
+def kNajblizszychSasiadow (punkt, dane, xTableName, yTableName, k ):
+    #w naszej implementacji problem remisow rozwiazujemy w taki sposob, ze stopniowo zwiekszamy k o 1
+    while True:
+        kategorieSasiadow = znajdzSasiadow(punkt, dane,  xTableName,yTableName, k )
+        kategoria = najczestrzaWartosc(kategorieSasiadow)
+        if kategoria == None:
+            k += 1
+            if k >= len(dane):
+                break
+        return kategoria
+
+def znajdzSasiadow(punkt, dane,  xTableName, yTableName, k ):
+    kategorie = dane['species'].values.tolist()
+    danePunktow = dane[[xTableName, yTableName]].values.tolist()
+    sasiedzi = []
+    kategorieSasiadow = []
+
+    for i in range(0, k):
+        najkrotszyDystans = None
+        idNajblizszegoSasiada = None
+
+        for i in range(0, len(danePunktow)):
+            dystans = obliczOdleglosc(punkt, danePunktow[i])
+            if najkrotszyDystans is not None:
+                if najkrotszyDystans > dystans:
+                    najkrotszyDystans = dystans
+                    idNajblizszegoSasiada = i
+            else:
+                najkrotszyDystans = dystans
+                idNajblizszegoSasiada = i
+        sasiedzi.append(danePunktow[idNajblizszegoSasiada])
+        kategorieSasiadow.append(kategorie[idNajblizszegoSasiada])
+    return kategorieSasiadow
+def normalizujZbior(dane,xTableName,yTableName):
+    znormalizowaneX = []
+    znormalizowaneY = []
+    listaX = dane[xTableName].values.tolist()
+    listaY = dane[yTableName].values.tolist()
+    minimalnaWartoscX = wyznaczMinimum(listaX)
+    maksymalnaWartoscX = wyznaczMaksimum(listaX)
+    minimalnaWartoscY = wyznaczMinimum(listaY)
+    maksymalnaWartoscY = wyznaczMaksimum(listaY)
+
+    for i in range(len(dane)):
+        znormalizowaneX.append((listaX[i] - minimalnaWartoscX)/(maksymalnaWartoscX - minimalnaWartoscX))
+        znormalizowaneY.append((listaY[i] - minimalnaWartoscY)/(maksymalnaWartoscY - minimalnaWartoscY))
+    return [znormalizowaneX,znormalizowaneY]
+def najczestrzaWartosc(lista):
+    listaUnikalnych = unikalneWartosci(lista)
+    wartosciList = []
+    ilosciList = []
+    for i in range(len(listaUnikalnych)):
+        wartosciList.append(listaUnikalnych[i][0])
+        ilosciList.append(listaUnikalnych[i][1])
+
+    najwiekszaIlosc = wyznaczMaksimum(ilosciList)
+    if ilosciList.count(najwiekszaIlosc) != 1:
+        return None
+    else:
+        return wartosciList[ilosciList.index(najwiekszaIlosc)]
+
+
 
 #zad 3 podpunkt 1
 def kSrednich( k,daneDoWykresu,xTableName,yTableName, xAxisTitle, yAxisTitle,czyPokazacWykres=False):

@@ -70,5 +70,18 @@ if zad1Flaga:
     #7th wykres
     mf.generujWykresWCSSIteracje(noweWCSS)
 
+dataTrain = mf.importData("././dane_train_test/data_train.csv")
+dataTest = mf.importData("././dane_train_test/data_test.csv")
+
+# print(dataTrain['species'].values.tolist())
 
 
+
+# print(dataTrain[["sepal length", "sepal width"]].values.tolist())
+# print(mf.znajdzSasiadow([5.5,4.1],dataTrain,"sepal length","sepal width",3))
+dataTestAsList = dataTest[["sepal length","sepal width"]].values.tolist()
+kategorie = dataTest["species"].values.tolist()
+for i in range(0,len(dataTest)):
+    punkt = dataTestAsList
+    output = mf.kNajblizszychSasiadow(punkt,dataTrain,"sepal length","sepal width",3)
+    print(f"{i}. punkt: {punkt} | {kategorie[i]}, output: {output}")
