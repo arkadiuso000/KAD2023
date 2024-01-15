@@ -9,44 +9,74 @@ import os
 
 #zad 3 podpunkt 2
 
-def kNajblizszychSasiadow (punkt, dane, xTableName, yTableName, k ):
-    #w naszej implementacji problem remisow rozwiazujemy w taki sposob, ze stopniowo zwiekszamy k o 1
-    while True:
-        kategorieSasiadow = znajdzSasiadow(punkt, dane,  xTableName,yTableName, k )
-        kategoria = najczestrzaWartosc(kategorieSasiadow)
-        if kategoria == None:
-            k += 1
-            if k >= len(dane):
-                break
-        return kategoria
+def kNajblizszychSasiadow(punkt, dane, kategorie, k):
 
-def znajdzSasiadow(punkt, dane,  xTableName, yTableName, k ):
-    kategorie = dane['species'].values.tolist()
-    danePunktow = dane[[xTableName, yTableName]].values.tolist()
+    dane = dane.copy()
+    kategorie = kategorie.copy()
+    if len(punkt) == 2:
+        dane = normalizujZbior(dane)
+    #problem remisu rozwiazujemy poprzez zwiekszenie k o 1
+    while True:
+        kategorieSasiadow = szukajSasiadow(punkt,dane,kategorie, k)
+        kategoria = najczestrzaWartosc(kategorieSasiadow)
+        if kategoria != None:
+            break
+        k += 1
+        if k >= len(dane):
+            break
+    return kategoria
+def szukajSasiadow(punkt, dane, kategorie, k):
+
+    noweDane = []
+    for i in range(len(dane[0])):
+        porcjaDanych = []
+        for j in range(len(dane)):
+            porcjaDanych.append(dane[j][i])
+        noweDane.append(porcjaDanych)
+    dane = noweDane
+
+    liczbaWymiarow = len(punkt)
+
     sasiedzi = []
     kategorieSasiadow = []
 
     for i in range(0, k):
-        najkrotszyDystans = None
         idNajblizszegoSasiada = None
+        najkrotszyDystans = None
 
-        for i in range(0, len(danePunktow)):
-            dystans = obliczOdleglosc(punkt, danePunktow[i])
-            if najkrotszyDystans is not None:
-                if najkrotszyDystans > dystans:
-                    najkrotszyDystans = dystans
-                    idNajblizszegoSasiada = i
-            else:
+        for j in range (0, len(dane)):
+            dystans = 0
+            for wymiar in range(0,liczbaWymiarow):
+
+                dystans += (punkt[wymiar] - dane[j][wymiar])**2
+            dystans = math.sqrt(dystans)
+
+            if najkrotszyDystans == None:
                 najkrotszyDystans = dystans
-                idNajblizszegoSasiada = i
-        sasiedzi.append(danePunktow[idNajblizszegoSasiada])
+                idNajblizszegoSasiada = j
+            elif najkrotszyDystans > dystans:
+                najkrotszyDystans = dystans
+                idNajblizszegoSasiada = j
+
+        sasiedzi.append(dane[idNajblizszegoSasiada])
+        # print(f"id: {idNajblizszegoSasiada}, kat: {kategorie[idNajblizszegoSasiada]}")
         kategorieSasiadow.append(kategorie[idNajblizszegoSasiada])
-    return kategorieSasiadow
-def normalizujZbior(dane,xTableName,yTableName):
+
+        dane.remove(dane[idNajblizszegoSasiada])
+        kategorie.remove(kategorie[idNajblizszegoSasiada])
+    return kategorieSasiadow, sasiedzi
+
+
+def normalizujZbior(dane):
     znormalizowaneX = []
     znormalizowaneY = []
-    listaX = dane[xTableName].values.tolist()
-    listaY = dane[yTableName].values.tolist()
+    listaX = []
+    listaY = []
+    for i in range(len(dane)):
+        listaX.append(dane[i][0])
+        listaY.append(dane[i][1])
+
+
     minimalnaWartoscX = wyznaczMinimum(listaX)
     maksymalnaWartoscX = wyznaczMaksimum(listaX)
     minimalnaWartoscY = wyznaczMinimum(listaY)
@@ -56,20 +86,34 @@ def normalizujZbior(dane,xTableName,yTableName):
         znormalizowaneX.append((listaX[i] - minimalnaWartoscX)/(maksymalnaWartoscX - minimalnaWartoscX))
         znormalizowaneY.append((listaY[i] - minimalnaWartoscY)/(maksymalnaWartoscY - minimalnaWartoscY))
     return [znormalizowaneX,znormalizowaneY]
+def zlaczZnormlizowaneZbiory(dane):
+    output = []
+    for i in range(len(dane[0])):
+        output.append([dane[0][i],dane[1][i]])
+    return output
 def najczestrzaWartosc(lista):
-    listaUnikalnych = unikalneWartosci(lista)
-    wartosciList = []
-    ilosciList = []
+    listaUnikalnych = []
+
+    for i in range(len(lista[0])):
+        if lista[0][i] not in listaUnikalnych:
+            listaUnikalnych.append(lista[0][i])
+    najczestrzaWartosc = ''
+    najwiekszaIlosc = None
     for i in range(len(listaUnikalnych)):
-        wartosciList.append(listaUnikalnych[i][0])
-        ilosciList.append(listaUnikalnych[i][1])
+        ilosc = lista[0].count(listaUnikalnych[i])
+        if najwiekszaIlosc == None:
+            najwiekszaIlosc = ilosc
+            najczestrzaWartosc = listaUnikalnych[i]
 
-    najwiekszaIlosc = wyznaczMaksimum(ilosciList)
-    if ilosciList.count(najwiekszaIlosc) != 1:
-        return None
-    else:
-        return wartosciList[ilosciList.index(najwiekszaIlosc)]
+        elif najwiekszaIlosc  < ilosc:
+            najwiekszaIlosc = ilosc
+            najczestrzaWartosc = listaUnikalnych[i]
+        elif najwiekszaIlosc == ilosc and len(listaUnikalnych) == 1:
+            najczestrzaWartosc = listaUnikalnych[0]
+        elif najwiekszaIlosc == ilosc:
+            najczestrzaWartosc = None
 
+    return najczestrzaWartosc
 
 
 #zad 3 podpunkt 1
