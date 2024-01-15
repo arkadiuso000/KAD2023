@@ -10,11 +10,13 @@ except FileExistsError:
     pass
 #🤌
 myData = mf.importData("././Dane-20231111/data.csv")
-
+dataTrain = mf.importData("././dane_train_test/data_train.csv")
+dataTest = mf.importData("././dane_train_test/data_test.csv")
 #flags
-zad1Flaga = False
+podpunkt1Flag = True
+podpunkt2Flag = True
 
-if zad1Flaga:
+if podpunkt1Flag:
     daneWCSS = []
     for k in range(2,11):
         if k == 3:
@@ -70,25 +72,22 @@ if zad1Flaga:
     #7th plot
     mf.generujWykresWCSSIteracje(noweWCSS)
 
-dataTrain = mf.importData("././dane_train_test/data_train.csv")
-dataTest = mf.importData("././dane_train_test/data_test.csv")
 
-
-#podpunkt 2
-#8th plot
-mf.podpunkt2WszystkieCechy(dataTrain, dataTest)
-#9th plot
-mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "sepal width"]], dataTrain["species"], dataTest[["sepal length", "sepal width"]], dataTest["species"])
-#10th plot
-mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "petal length"]], dataTrain["species"], dataTest[["sepal length", "petal length"]], dataTest["species"])
-#11th plot
-mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "petal width"]], dataTrain["species"], dataTest[["sepal length", "petal width"]], dataTest["species"])
-#12th plot
-mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal width", "petal length"]], dataTrain["species"], dataTest[["sepal width", "petal length"]], dataTest["species"])
-#13th
-mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal width", "petal width"]], dataTrain["species"], dataTest[["sepal width", "petal width"]], dataTest["species"])
-#14th
-mf.podpunkt2PoszczegolneCechy(dataTrain[["petal length", "petal width"]], dataTrain["species"], dataTest[["petal length", "petal width"]], dataTest["species"])
+if podpunkt2Flag:
+    #8th plot
+    mf.podpunkt2WszystkieCechy(dataTrain, dataTest)
+    #9th plot
+    mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "sepal width"]], dataTrain["species"], dataTest[["sepal length", "sepal width"]], dataTest["species"])
+    #10th plot
+    mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "petal length"]], dataTrain["species"], dataTest[["sepal length", "petal length"]], dataTest["species"])
+    #11th plot
+    mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal length", "petal width"]], dataTrain["species"], dataTest[["sepal length", "petal width"]], dataTest["species"])
+    #12th plot
+    mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal width", "petal length"]], dataTrain["species"], dataTest[["sepal width", "petal length"]], dataTest["species"])
+    #13th
+    mf.podpunkt2PoszczegolneCechy(dataTrain[["sepal width", "petal width"]], dataTrain["species"], dataTest[["sepal width", "petal width"]], dataTest["species"])
+    #14th
+    mf.podpunkt2PoszczegolneCechy(dataTrain[["petal length", "petal width"]], dataTrain["species"], dataTest[["petal length", "petal width"]], dataTest["species"])
 
 
 

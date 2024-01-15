@@ -48,12 +48,12 @@ def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
     # Rysowanie wykresu słupkowego dokładności
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
-    plt.xlabel('Liczba sąsiadów k')
-    plt.ylabel('Dokładność [%]')
+    plt.xlabel('Liczba sąsiadów k',fontsize=18)
+    plt.ylabel('Dokładność [%]',fontsize=18)
     plt.xticks(range(1, 16))
     plt.yticks(range(0, 110, 10))
     plt.grid(axis='y', linestyle='--', linewidth=0.7)
-    save_unique_figure('wykres')
+    zapiszWykres('wykres')
     plt.show()
 
 
@@ -99,129 +99,23 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
     # Rysowanie wykresu słupkowego dokładności
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
-    plt.title('Dokładność w procentach dla różnych wartości k')
-    plt.xlabel('Liczba sąsiadów k')
-    plt.ylabel('Dokładność [%]')
+
+    plt.xlabel('Liczba sąsiadów k',fontsize=18)
+    plt.ylabel('Dokładność [%]',fontsize=18)
     plt.xticks(range(1, 16))
     plt.yticks(range(0, 110, 10))
     plt.grid(axis='y', linestyle='--', linewidth=0.7)
-    save_unique_figure('wykres')
+    zapiszWykres('wykres')
     plt.show()
 
     print("Najlepsza wartość k:", najlepszeK)
     print("Macierz pomyłek dla najlepszego k:")
     print(macierzPomylekDlaNajlepszegoK)
 
-
-# def kNajblizszychSasiadow(punkt, dane, kategorie, k):
-#
-#     dane = dane.copy()
-#     kategorie = kategorie.copy()
-#     if len(punkt) == 2:
-#         dane = normalizujZbior(dane)
-#     #problem remisu rozwiazujemy poprzez zwiekszenie k o 1
-#     while True:
-#         kategorieSasiadow = szukajSasiadow(punkt,dane,kategorie, k)
-#         kategoria = najczestrzaWartosc(kategorieSasiadow)
-#         if kategoria != None:
-#             break
-#         k += 1
-#         if k >= len(dane[0]):
-#             break
-#     return kategoria
-# def szukajSasiadow(punkt, dane, kategorie, k):
-#
-#     noweDane = []
-#     for i in range(len(dane[0])):
-#         porcjaDanych = []
-#         for j in range(len(dane)):
-#             porcjaDanych.append(dane[j][i])
-#         noweDane.append(porcjaDanych)
-#     dane = noweDane
-#
-#     liczbaWymiarow = len(punkt)
-#
-#     sasiedzi = []
-#     kategorieSasiadow = []
-#
-#     for i in range(0, k):
-#         idNajblizszegoSasiada = None
-#         najkrotszyDystans = None
-#
-#         for j in range (0, len(dane)):
-#             dystans = 0
-#             for wymiar in range(0,liczbaWymiarow):
-#
-#                 dystans += (punkt[wymiar] - dane[j][wymiar])**2
-#             dystans = math.sqrt(dystans)
-#
-#             if najkrotszyDystans == None:
-#                 najkrotszyDystans = dystans
-#                 idNajblizszegoSasiada = j
-#             elif najkrotszyDystans > dystans:
-#                 najkrotszyDystans = dystans
-#                 idNajblizszegoSasiada = j
-#
-#         sasiedzi.append(dane[idNajblizszegoSasiada])
-#         print(len(kategorie), idNajblizszegoSasiada)
-#         kategorieSasiadow.append(kategorie[idNajblizszegoSasiada])
-#
-#         dane.remove(dane[idNajblizszegoSasiada])
-#         kategorie.remove(kategorie[idNajblizszegoSasiada])
-#     return kategorieSasiadow, sasiedzi
-#
-#
-# def normalizujZbior(dane):
-#     znormalizowaneX = []
-#     znormalizowaneY = []
-#     listaX = []
-#     listaY = []
-#     for i in range(len(dane)):
-#         listaX.append(dane[i][0])
-#         listaY.append(dane[i][1])
-#
-#
-#     minimalnaWartoscX = wyznaczMinimum(listaX)
-#     maksymalnaWartoscX = wyznaczMaksimum(listaX)
-#     minimalnaWartoscY = wyznaczMinimum(listaY)
-#     maksymalnaWartoscY = wyznaczMaksimum(listaY)
-#
-#     for i in range(len(dane)):
-#         znormalizowaneX.append((listaX[i] - minimalnaWartoscX)/(maksymalnaWartoscX - minimalnaWartoscX))
-#         znormalizowaneY.append((listaY[i] - minimalnaWartoscY)/(maksymalnaWartoscY - minimalnaWartoscY))
-#     return [znormalizowaneX,znormalizowaneY]
-# def zlaczZnormlizowaneZbiory(dane):
-#     output = []
-#     for i in range(len(dane[0])):
-#         output.append([dane[0][i],dane[1][i]])
-#     return output
-# def najczestrzaWartosc(lista):
-#     listaUnikalnych = []
-#
-#     for i in range(len(lista[0])):
-#         if lista[0][i] not in listaUnikalnych:
-#             listaUnikalnych.append(lista[0][i])
-#     najczestrzaWartosc = ''
-#     najwiekszaIlosc = None
-#     for i in range(len(listaUnikalnych)):
-#         ilosc = lista[0].count(listaUnikalnych[i])
-#         if najwiekszaIlosc == None:
-#             najwiekszaIlosc = ilosc
-#             najczestrzaWartosc = listaUnikalnych[i]
-#
-#         elif najwiekszaIlosc  < ilosc:
-#             najwiekszaIlosc = ilosc
-#             najczestrzaWartosc = listaUnikalnych[i]
-#         elif najwiekszaIlosc == ilosc:
-#             najczestrzaWartosc = None
-#     return najczestrzaWartosc
-#
-
 #zad 3 podpunkt 1
 def kSrednich( k,daneDoWykresu,xTableName,yTableName, xAxisTitle, yAxisTitle,czyPokazacWykres=False):
     dane = daneDoWykresu[[xTableName,yTableName]].copy().values
     centroidy = inicjacjaCentroidow(dane, k)
-    # print(centroidy)
     poprzedniePrzypisania = []
     iloscPetli = 0
     for i in range(k):
@@ -233,7 +127,6 @@ def kSrednich( k,daneDoWykresu,xTableName,yTableName, xAxisTitle, yAxisTitle,czy
         centroidy = aktualizacjaCentroidow(dane, klastry, k)
 
         aktualnePrzypisania = unikalneWartosci(klastry)
-        # print("aktualnePrzupisania = {}\npoprzedniePrzypisania = {}".format(aktualnePrzypisania,poprzedniePrzypisania))
         if warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
             break
         else:
@@ -265,7 +158,7 @@ def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, 
     # Formatowanie osi X i Y, aby zawsze używały liczby zmiennoprzecinkowej z jednym miejscem po przecinku
     ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
-    save_unique_figure('wykres')
+    zapiszWykres('wykres')
     plt.show()
 def generujWykresWCSSIteracje(dane):
     x = [2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -283,7 +176,7 @@ def generujWykresWCSSIteracje(dane):
     # fig.tight_layout()
 
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
-    save_unique_figure('wykres')
+    zapiszWykres('wykres')
     plt.show()
 def liczWCSS(dane, centroidy, klastry):
     WCSS = 0
@@ -328,11 +221,12 @@ def inicjacjaCentroidow(dane, k):
         centroidy.append([losowaWartosc(xMin, xMax), losowaWartosc(yMin, yMax)])
     return centroidy
 def losowaWartosc(minimum, maximum):
-    return (maximum - minimum) + minimum * random.random()
+    losowaWart = (maximum - minimum) + minimum * random.random()
+    return losowaWart
 def przypiszKlastry(dane, centroidy):
     klastry = []
     for punkt in dane:
-        najmniejszaOdleglosc = float('inf')
+        najmniejszaOdleglosc = float(9999)
         klaster = None
         for i, centroid in enumerate(centroidy):
             odleglosc = obliczOdleglosc(punkt, centroid)
@@ -364,22 +258,15 @@ def aktualizacjaCentroidow(punkty, klastry, k):
     return noweCentroidy
 def warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
     return poprzedniePrzypisania == aktualnePrzypisania
-def save_unique_figure(base_filename, extension='.jpg', directory='./wykresy'):
-    counter = 1
-    filename = f"{base_filename}{extension}"
-    # Dodaj liczbę do nazwy pliku, jeśli plik już istnieje
-    while os.path.exists(os.path.join(directory, filename)):
-        filename = f"{base_filename}_{counter}{extension}"
-        counter += 1
+def zapiszWykres(nazwa, rozszerzenie='.jpg', folder='./wykresy'):
+    licznik = 1
+    pelnaNazwa = f"{nazwa}{rozszerzenie}"
 
-    # Tworzenie przykładowego wykresu do zapisania
-    plt.figure()
-    plt.plot([1, 2, 3], [4, 5, 6])  # Tutaj dodaj kod generujący wykres
-    plt.close()  # Zamknij figurę po zapisaniu
-
-    # Zapisanie wykresu z unikalną nazwą pliku
-    plt.savefig(os.path.join(directory, filename))
-    print(f"Zapisano wykres jako: {filename}")
+    while os.path.exists(os.path.join(folder, pelnaNazwa)):
+        pelnaNazwa = f"{nazwa}_{licznik}{rozszerzenie}"
+        licznik += 1
+    plt.savefig(os.path.join(folder, pelnaNazwa))
+    print(f"Zapisano wykres jako: {pelnaNazwa}")
 
 #funkcje z poprzednich zadan
 def importData(fileDst):
