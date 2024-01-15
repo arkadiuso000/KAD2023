@@ -22,7 +22,7 @@ def kNajblizszychSasiadow(punkt, dane, kategorie, k):
         if kategoria != None:
             break
         k += 1
-        if k >= len(dane):
+        if k >= len(dane[0]):
             break
     return kategoria
 def szukajSasiadow(punkt, dane, kategorie, k):
@@ -59,7 +59,6 @@ def szukajSasiadow(punkt, dane, kategorie, k):
                 idNajblizszegoSasiada = j
 
         sasiedzi.append(dane[idNajblizszegoSasiada])
-        # print(f"id: {idNajblizszegoSasiada}, kat: {kategorie[idNajblizszegoSasiada]}")
         kategorieSasiadow.append(kategorie[idNajblizszegoSasiada])
 
         dane.remove(dane[idNajblizszegoSasiada])
@@ -108,11 +107,8 @@ def najczestrzaWartosc(lista):
         elif najwiekszaIlosc  < ilosc:
             najwiekszaIlosc = ilosc
             najczestrzaWartosc = listaUnikalnych[i]
-        elif najwiekszaIlosc == ilosc and len(listaUnikalnych) == 1:
-            najczestrzaWartosc = listaUnikalnych[0]
         elif najwiekszaIlosc == ilosc:
             najczestrzaWartosc = None
-
     return najczestrzaWartosc
 
 

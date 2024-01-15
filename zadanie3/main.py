@@ -72,29 +72,16 @@ if zad1Flaga:
 
 dataTrain = mf.importData("././dane_train_test/data_train.csv")
 dataTest = mf.importData("././dane_train_test/data_test.csv")
-
-# print(dataTrain['species'].values.tolist())
-
-
-
-# print(dataTrain[["sepal length", "sepal width"]].values.tolist())
-# print(mf.znajdzSasiadow([5.5,4.1],dataTrain,"sepal length","sepal width",3))
-dataTestAsList = dataTest[["sepal length","sepal width"]].values.tolist()
-print(dataTestAsList)
-a = mf.normalizujZbior(dataTestAsList)
-
-znormalizonaDataTestAsList = mf.zlaczZnormlizowaneZbiory(a)
-kategorie = dataTrain["species"].values.tolist()
+kategorieTrain = dataTrain["species"].values.tolist()
 kategorieTest = dataTest["species"].values.tolist()
-print(len(kategorie),len(dataTestAsList))
-przypasowania = []
-for i in range(0,len(dataTest)):
-    punkt = znormalizonaDataTestAsList[i]
-    # output = mf.kNajblizszychSasiadow(punkt,dataTrain,"sepal length","sepal width",3)
-    output = mf.kNajblizszychSasiadow(punkt,dataTrain[["sepal length","sepal width"]].values.tolist(),kategorie, 3)
-    przypasowania.append(output)
-    print(f"{i+1}. punkt: {punkt} | {kategorieTest[i]}, output: {output}")
+dataTestAsList = mf.zlaczZnormlizowaneZbiory(mf.normalizujZbior(dataTest[["sepal length","sepal width"]].values.tolist()))
 
-print(przypasowania.count("setosa"))
-print(przypasowania.count("virginica"))
-print(przypasowania.count("versicolor"))
+for k in range(1,16):
+
+
+    for i in range(len(dataTestAsList)):
+        punkt = dataTestAsList[i]
+        przypisanie = mf.kNajblizszychSasiadow(punkt, dataTrain, kategorieTrain, k)
+        oryginalnaKategoria = kategorieTest[i]
+        print(oryginalnaKategoria, przypisanie)
+
