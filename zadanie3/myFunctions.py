@@ -112,32 +112,28 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
     print("Macierz pomyłek dla najlepszego k:")
     print(macierzPomylekDlaNajlepszegoK)
 
-#zad 3 podpunkt 1
-def kSrednich( k,daneDoWykresu,xTableName,yTableName, xAxisTitle, yAxisTitle,czyPokazacWykres=False):
-    dane = daneDoWykresu[[xTableName,yTableName]].copy().values
-    centroidy = inicjacjaCentroidow(dane, k)
-    poprzedniePrzypisania = []
-    iloscPetli = 0
-    for i in range(k):
-        poprzedniePrzypisania.append([0,0])
-    while True:
-        iloscPetli += 1
 
+
+
+
+
+
+
+
+
+#zad 3 podpunkt 1
+def kSrednich(dane, k, czyPokazacWykres=False):
+    centroidy = inicjacjaCentroidow(dane,k)
+
+    while True:
+        poprzednieCentroidy = centroidy
         klastry = przypiszKlastry(dane, centroidy)
         centroidy = aktualizacjaCentroidow(dane, klastry, k)
 
-        aktualnePrzypisania = unikalneWartosci(klastry)
-        if warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
+        if warunekStopu(poprzednieCentroidy,centroidy):
             break
-        else:
-            poprzedniePrzypisania = aktualnePrzypisania
 
-    WCSS = liczWCSS(dane,centroidy,klastry)
-    noweDane = daneDoWykresu.copy()
-    if czyPokazacWykres:
-        noweDane.loc[:,'cluster'] = klastry
-        generujWykresKSrednich(centroidy,noweDane,xTableName,yTableName, xAxisTitle,yAxisTitle)
-    return [k,iloscPetli, WCSS]
+    return klastry
 def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, yAxisTitle):
     fig, ax = plt.subplots()
 
@@ -169,11 +165,12 @@ def generujWykresWCSSIteracje(dane):
     ax1.set_xlabel("Wartość parametru K", fontsize=12)
     ax1.set_ylabel("Ilość Iteracji", fontsize=12)
     ax1.plot(x, y1, linewidth=2, color='#8fe3c1')
+    ax1.scatter(x, y1, color='#8fe3c1')  # Dodanie kropek dla y1
 
     ax2 = ax1.twinx()
     ax2.set_ylabel("Wskażnik WCSS", fontsize=12)
     ax2.plot(x, y2, linewidth=2, color='#8fd4f7')
-    # fig.tight_layout()
+    ax2.scatter(x, y2, color='#8fd4f7')  # Dodanie kropek dla y2
 
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     zapiszWykres('wykres')
@@ -209,16 +206,22 @@ def unikalneWartosci(lista):
         output.append([unikalnaWartosc, lista.count(unikalnaWartosc)])
     return output
 def inicjacjaCentroidow(dane, k):
-    xMax = yMax = float(-9999)
-    xMin = yMin = float(9999)
+    cecha1Max = cecha2Max = cecha3Max = cecha4Max = float(-9999)
+    cecha1Min = cecha2Min = cecha3Min = cecha4Min = float(9999)
     for punkt in dane:
-        xMax = max(punkt[0], xMax)
-        yMax = max(punkt[1], yMax)
-        xMin = min(punkt[0], xMin)
-        yMin = min(punkt[1], yMin)
+        #maksymalne
+        cecha1Max = max(punkt[0], cecha1Max)
+        cecha2Max = max(punkt[1], cecha2Max)
+        cecha3Max = max(punkt[2], cecha3Max)
+        cecha4Max = max(punkt[3], cecha4Max)
+        #minimalne
+        cecha1Min = min(punkt[0], cecha1Min)
+        cecha2Min = min(punkt[1], cecha2Min)
+        cecha3Min = min(punkt[2], cecha3Min)
+        cecha4Min = min(punkt[3], cecha4Min)
     centroidy = []
     for i in range(k):
-        centroidy.append([losowaWartosc(xMin, xMax), losowaWartosc(yMin, yMax)])
+        centroidy.append([losowaWartosc(cecha1Max, cecha1Min), losowaWartosc(cecha2Max, cecha2Min), losowaWartosc(cecha3Max, cecha3Min), losowaWartosc(cecha4Max, cecha4Min)])
     return centroidy
 def losowaWartosc(minimum, maximum):
     losowaWart = (maximum - minimum) + minimum * random.random()
@@ -236,24 +239,27 @@ def przypiszKlastry(dane, centroidy):
         klastry.append(klaster)
     return klastry
 def obliczOdleglosc(punkt1, punkt2):
-    odleglosc = math.sqrt((punkt1[0] - punkt2[0]) ** 2 + (punkt1[1] - punkt2[1]) ** 2)
+    odleglosc = math.sqrt((punkt1[0] - punkt2[0]) ** 2 + (punkt1[1] - punkt2[1]) ** 2+ (punkt1[2] - punkt2[2]) ** 2+ (punkt1[3] - punkt2[3]) ** 2)
     return odleglosc
 def aktualizacjaCentroidow(punkty, klastry, k):
     noweCentroidy = []
     liczbyWKlastrach = []
     for i in range(k):
-        noweCentroidy.append([0,0])
-        liczbyWKlastrach.append([0])
+        noweCentroidy.append([0,0,0,0])
+        liczbyWKlastrach.append(0)
+
     for punkt, klaster in zip(punkty, klastry):
 
         noweCentroidy[klaster][0] += punkt[0]
         noweCentroidy[klaster][1] += punkt[1]
-        liczbyWKlastrach[klaster][0] += 1
+        noweCentroidy[klaster][2] += punkt[2]
+        noweCentroidy[klaster][3] += punkt[3]
+        liczbyWKlastrach[klaster] += 1
 
-    for i, (x,y) in enumerate(noweCentroidy):
+    for i, (cecha1,cecha2,cecha3,cecha4) in enumerate(noweCentroidy):
         #nie liczymy centroidow dla pustych klastrow
-        if liczbyWKlastrach[i][0] != 0:
-            noweCentroidy[i] =(x / liczbyWKlastrach[i][0], y / liczbyWKlastrach[i][0])
+        if liczbyWKlastrach[i] != 0:
+            noweCentroidy[i] =(cecha1 / liczbyWKlastrach[i], cecha2 / liczbyWKlastrach[i], cecha3 / liczbyWKlastrach[i], cecha4 / liczbyWKlastrach[i])
 
     return noweCentroidy
 def warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
@@ -267,6 +273,14 @@ def zapiszWykres(nazwa, rozszerzenie='.jpg', folder='./wykresy'):
         licznik += 1
     plt.savefig(os.path.join(folder, pelnaNazwa))
     print(f"Zapisano wykres jako: {pelnaNazwa}")
+
+
+
+
+
+
+
+
 
 #funkcje z poprzednich zadan
 def importData(fileDst):
