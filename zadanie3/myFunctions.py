@@ -222,26 +222,31 @@ def inicjacjaCentroidow(dane, k):
     centroidy = []
     for i in range(k):
         centroidy.append([losowaWartosc(cecha1Max, cecha1Min), losowaWartosc(cecha2Max, cecha2Min), losowaWartosc(cecha3Max, cecha3Min), losowaWartosc(cecha4Max, cecha4Min)])
-    print("inicjalizacja cen",centroidy)
+    print("poczatkowe centroidy",centroidy)
     return centroidy
 def losowaWartosc(minimum, maximum):
-    losowaWart = (maximum - minimum) + minimum * random.random()
+    losowaWart = (maximum - minimum) * random.random() + minimum
     return losowaWart
 def przypiszKlastry(dane, centroidy):
+    print("centroidy ",centroidy)
     klastry = []
     for punkt in dane:
-        najmniejszaOdleglosc = float(9999)
+
+        najmniejszaOdleglosc = 9999
         klaster = None
         for i in range(len(centroidy)):
+
             odleglosc = obliczOdleglosc(punkt, centroidy[i])
 
             if najmniejszaOdleglosc > odleglosc:
                 najmniejszaOdleglosc = odleglosc
                 klaster = i
         klastry.append(klaster)
+
     return klastry
 def obliczOdleglosc(punkt1, punkt2):
-    odleglosc = math.sqrt((punkt1[0] - punkt2[0]) ** 2 + (punkt1[1] - punkt2[1]) ** 2+ (punkt1[2] - punkt2[2]) ** 2+ (punkt1[3] - punkt2[3]) ** 2)
+    odleglosc = (punkt1[0] - punkt2[0]) ** 2 + (punkt1[1] - punkt2[1]) ** 2+ (punkt1[2] - punkt2[2]) ** 2+ (punkt1[3] - punkt2[3]) ** 2
+    odleglosc = math.sqrt(odleglosc)
     return odleglosc
 def aktualizacjaCentroidow(punkty, klastry, k):
 
@@ -250,19 +255,19 @@ def aktualizacjaCentroidow(punkty, klastry, k):
     for i in range(k):
         noweCentroidy.append([0,0,0,0])
         liczbyWKlastrach.append(0)
-
     for punkt, klaster in zip(punkty, klastry):
+
         noweCentroidy[klaster][0] += punkt[0]
         noweCentroidy[klaster][1] += punkt[1]
         noweCentroidy[klaster][2] += punkt[2]
         noweCentroidy[klaster][3] += punkt[3]
         liczbyWKlastrach[klaster] += 1
-    print(liczbyWKlastrach)
+
     for i, (cecha1,cecha2,cecha3,cecha4) in enumerate(noweCentroidy):
         #nie liczymy centroidow dla pustych klastrow
         if liczbyWKlastrach[i] != 0:
             noweCentroidy[i] =(cecha1 / liczbyWKlastrach[i], cecha2 / liczbyWKlastrach[i], cecha3 / liczbyWKlastrach[i], cecha4 / liczbyWKlastrach[i])
-    print("nowe centroidy ",noweCentroidy)
+    print("zaktualizowane centroidy",noweCentroidy)
     return noweCentroidy
 def warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
     return poprzedniePrzypisania == aktualnePrzypisania
