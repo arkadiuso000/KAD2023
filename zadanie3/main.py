@@ -1,7 +1,7 @@
 import myFunctions as mf
-import matplotlib.pyplot as plt
+import pandas as pd
 import os
-import numpy as np
+
 #tworzy folder
 try:
     #zabezpieczenie przed łindołsem
@@ -13,7 +13,7 @@ myData = mf.importData("././Dane-20231111/data.csv")
 dataTrain = mf.importData("././dane_train_test/data_train.csv")
 dataTest = mf.importData("././dane_train_test/data_test.csv")
 #flags
-podpunkt1Flag = True
+podpunkt1Flag = False
 podpunkt2Flag = False
 
 if podpunkt1Flag:
@@ -91,3 +91,18 @@ if podpunkt2Flag:
 
 
 
+# Załadowanie pliku CSV
+df = pd.read_csv("././Dane-20231111/data.csv", header=None)
+
+# Wybór pierwszych czterech kolumn
+df_selected = df.iloc[:, :4]
+
+# Konwersja do listy list
+myNewData = df_selected.values.tolist()
+
+a = mf.kSrednich(myNewData,3)
+print(len(myNewData))
+print(len(a))
+print("klaster1 ",a.count(0))
+print("klaster2 ",a.count(1))
+print("klaster3", a.count(2))
