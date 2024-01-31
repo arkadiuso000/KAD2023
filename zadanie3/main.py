@@ -10,11 +10,11 @@ try:
 except FileExistsError:
     pass
 #🤌
-myData = mf.importData("././Dane-20231111/data.csv")
+
 dataTrain = mf.importData("././dane_train_test/data_train.csv")
 dataTest = mf.importData("././dane_train_test/data_test.csv")
 #flags
-podpunkt1Flag = True
+podpunkt1Flag = False
 podpunkt2Flag = False
 
 if podpunkt1Flag:
@@ -36,8 +36,6 @@ if podpunkt1Flag:
         wartosciX.append(i)
 
     mf.generujWykresWCSSIteracje(mf.iteracje, daneWCSS)
-
-
 if podpunkt2Flag:
     #8th plot
     mf.podpunkt2WszystkieCechy(dataTrain, dataTest)
