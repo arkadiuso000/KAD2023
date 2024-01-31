@@ -7,6 +7,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+import copy
 
 #zad 3 podpunkt 2
 def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
@@ -124,25 +125,30 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
 #zad 3 podpunkt 1
 def kSrednich(dane, k, czyPokazacWykres=False):
     centroidy = inicjacjaCentroidow(dane,k)
-
+    kopiaDanych = copy.deepcopy(dane)
     while True:
         poprzednieCentroidy = centroidy
-        klastry = przypiszKlastry(dane, centroidy)
-        centroidy = aktualizacjaCentroidow(dane, klastry, k)
+        klastry = przypiszKlastry(kopiaDanych, centroidy)
+        centroidy = aktualizacjaCentroidow(kopiaDanych, klastry, k)
 
         if warunekStopu(poprzednieCentroidy,centroidy):
             break
-    for i in range(len(dane)):
-        dane[i].append(klastry[i])
-        dane[i].append(centroidy[klastry[i]])
+    for i in range(len(kopiaDanych)):
+        # print(klastry[i])
+        # print(centroidy[klastry[i]])
+        kopiaDanych[i].append(klastry[i])
+        kopiaDanych[i].append(centroidy[klastry[i]])
+        # print("dlugosc danych", len(dane[i]))
+
     #funkcja zwraca nam poczatkowe dane z dodana kolumna klastrow
     columns = ["sepal length", "sepal width", "petal length", "petal width", "cluster", "centroid"]
-    df = pd.DataFrame(dane, columns=columns)
-    # print("centroidy", centroidy)
-    # print(df)
+    # print(dane)
+    df = pd.DataFrame(kopiaDanych, columns=columns)
+
+    dfToList = df.values.tolist()
 
 
-    if k==3:
+    if k==0:
         #generowanie wykresow
         #1st
         generujWykresKSrednich(centroidy,df,"sepal length", "sepal width", "Długość działki kielicha (cm)","Szerokość dzialki kielicha (cm)")
@@ -157,7 +163,7 @@ def kSrednich(dane, k, czyPokazacWykres=False):
         #6th
         generujWykresKSrednich(centroidy,df,"petal length", "petal width", "Długość płatka (cm)", "Szerokość płatka (cm)")
 
-    return dane
+    return dfToList
 
 
 
