@@ -116,7 +116,6 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
     print(macierzPomylekDlaNajlepszegoK)
 
 
-
 #zad 3 podpunkt 1
 iteracje = []
 def kSrednich(dane, k, czyPokazacWykres=False):
@@ -143,7 +142,6 @@ def kSrednich(dane, k, czyPokazacWykres=False):
 
     dfToList = df.values.tolist()
 
-
     if k==3:
         #generowanie wykresow
         #1st
@@ -167,16 +165,16 @@ def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, 
     xCentroida = sameKolumny.index(xTableName)
     yCentroida = sameKolumny.index(yTableName)
     #Rysowanie punktów klastra
-    colors = ['#e82727', '#8fe3c1', '#8fd4f7']  # Lista kolorów dla klastrów
-    for cluster_number in output['cluster'].unique():
-        cluster = output[output['cluster'] == cluster_number]
-        ax.scatter(cluster[xTableName], cluster[yTableName], label=f'Cluster {cluster_number}',
-                   color=colors[cluster_number])
+    kolory = ['#e82727', '#8fe3c1', '#8fd4f7']  # Lista kolorów dla klastrów
+    for numerKlastra in output['cluster'].unique():
+        klaster = output[output['cluster'] == numerKlastra]
+        ax.scatter(klaster[xTableName], klaster[yTableName], label=f'Cluster {numerKlastra}',
+                   color=kolory[numerKlastra])
 
     #Rysowanie centroidów
-    for idx, centroid in enumerate(centroidy):
-        ax.plot(centroid[xCentroida], centroid[yCentroida], 'X', color=colors[idx], markersize=10, markeredgecolor='black',
-                label=f'Centroid {idx}')
+    for indeks, centroid in enumerate(centroidy):
+        ax.plot(centroid[xCentroida], centroid[yCentroida], 'X', color=kolory[indeks], markersize=10, markeredgecolor='black',
+                label=f'Centroid {indeks}')
 
     ax.set_xlabel(xAxisTitle, fontsize=14)
     ax.set_ylabel(yAxisTitle, fontsize=14)
@@ -203,16 +201,16 @@ def generujWykresWCSSIteracje(iloscIteracji, wartoscWCSS):
 
     plt.subplots_adjust(left=0.1, right=0.8, top=0.9, bottom=0.1)  # Dostosowanie marginesów
     fig.legend(handles=[line1, line2])
+    zapiszWykres('wykres')
     plt.show()
 def liczWCSS(dane):
-    WCSS_glowne = 0
+    WCSS = 0
     for dana in dane:
-
         punkt = dana[:4]
         centroid = dana[5]
         odlegloscPunktuOdCentroidu = obliczOdleglosc(punkt, centroid)
-        WCSS_glowne += odlegloscPunktuOdCentroidu**2
-    return WCSS_glowne
+        WCSS += odlegloscPunktuOdCentroidu**2
+    return WCSS
 def inicjacjaCentroidow(dane, k):
     cecha1Max = cecha2Max = cecha3Max = cecha4Max = float(-9999)
     cecha1Min = cecha2Min = cecha3Min = cecha4Min = float(9999)
@@ -242,7 +240,7 @@ def przypiszKlastry(dane, centroidy):
         klaster = None
         for i in range(len(centroidy)):
 
-            odleglosc = obliczOdleglosc(punkt, centroidy[i])
+            odleglosc = obliczOdleglosc(punkt, centroidy[i])**2
 
             if najmniejszaOdleglosc > odleglosc:
                 najmniejszaOdleglosc = odleglosc

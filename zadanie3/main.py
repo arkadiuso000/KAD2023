@@ -14,11 +14,11 @@ except FileExistsError:
 dataTrain = mf.importData("././dane_train_test/data_train.csv")
 dataTest = mf.importData("././dane_train_test/data_test.csv")
 #flags
-podpunkt1Flag = False
+podpunkt1Flag = True
 podpunkt2Flag = False
 
 if podpunkt1Flag:
-    # Załadowanie pliku CSV
+
     df = pd.read_csv("././Dane-20231111/data.csv", header=None)
 
     # Wybór pierwszych czterech kolumn
@@ -28,12 +28,9 @@ if podpunkt1Flag:
     myNewData = df_selected.values.tolist()
 
     daneWCSS = []
-    wartosciX = []
-
     for i in range(2, 11):
         output = mf.kSrednich(myNewData, i)
         daneWCSS.append(mf.liczWCSS(output))
-        wartosciX.append(i)
 
     mf.generujWykresWCSSIteracje(mf.iteracje, daneWCSS)
 if podpunkt2Flag:
