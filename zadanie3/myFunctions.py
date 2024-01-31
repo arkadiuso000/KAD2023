@@ -149,7 +149,7 @@ def kSrednich(dane, k, czyPokazacWykres=False):
     dfToList = df.values.tolist()
 
 
-    if k==0:
+    if k==3:
         #generowanie wykresow
         #1st
         generujWykresKSrednich(centroidy,df,"sepal length", "sepal width", "Długość działki kielicha (cm)","Szerokość dzialki kielicha (cm)")
@@ -193,25 +193,31 @@ def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, 
     ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     zapiszWykres('wykres')
     plt.show()
-def generujWykresWCSSIteracje(dane,x):
-    x = [2, 3, 4, 5, 6, 7, 8, 9, 10]
-    y1 = dane[0]
-    y2 = dane[1]
+import matplotlib.pyplot as plt
+from matplotlib import ticker
 
-    fig, ax1 = plt.subplots()
+def generujWykresWCSSIteracje(iloscIteracji, wartoscWCSS):
+    x = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    fig, ax1 = plt.subplots(figsize=(8.55, 5))
     ax1.set_xlabel("Wartość parametru K", fontsize=12)
     ax1.set_ylabel("Ilość Iteracji", fontsize=12)
-    ax1.plot(x, y1, linewidth=2, color='#8fe3c1')
-    ax1.scatter(x, y1, color='#8fe3c1')  # Dodanie kropek dla y1
+    line1, = ax1.plot(x, iloscIteracji, linewidth=2, color='#8fe3c1', label='Ilość Iteracji')
+    ax1.scatter(x, iloscIteracji, color='#8fe3c1')
 
     ax2 = ax1.twinx()
-    ax2.set_ylabel("Wskażnik WCSS", fontsize=12)
-    ax2.plot(x, y2, linewidth=2, color='#8fd4f7')
-    ax2.scatter(x, y2, color='#8fd4f7')  # Dodanie kropek dla y2
+    ax2.set_ylabel("Wskaźnik WCSS", fontsize=12)
+    line2, = ax2.plot(x, wartoscWCSS, linewidth=2, color='#8fd4f7', label='Wskaźnik WCSS')
+    ax2.scatter(x, wartoscWCSS, color='#8fd4f7')
 
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
-    zapiszWykres('wykres')
+
+    plt.subplots_adjust(left=0.1, right=0.8, top=0.9, bottom=0.1)  # Dostosowanie marginesów
+    fig.legend(handles=[line1, line2])
     plt.show()
+
+# generujWykresWCSSIteracje(iloscIteracji, wartoscWCSS)
+
 def liczWCSS(dane):
     WCSS_glowne = 0
     for dana in dane:

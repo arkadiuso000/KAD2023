@@ -104,10 +104,11 @@ myNewData = df_selected.values.tolist()
 # a = mf.kSrednich(myNewData,3)
 
 daneWCSS = []
-iteracje = []
+wartosciX = []
 for i in range(2,11):
     output = mf.kSrednich(myNewData,i)
     daneWCSS.append(mf.liczWCSS(output))
-    iteracje.append(i)
+    wartosciX.append(i)
 print(daneWCSS)
 print(mf.iteracje)
+mf.generujWykresWCSSIteracje( mf.iteracje, daneWCSS )
