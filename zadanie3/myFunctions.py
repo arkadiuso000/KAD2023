@@ -51,8 +51,8 @@ def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
     # Rysowanie wykresu słupkowego dokładności
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
-    plt.xlabel('Liczba sąsiadów k',fontsize=18)
-    plt.ylabel('Dokładność [%]',fontsize=18)
+    plt.xlabel('Liczba sąsiadów k',fontsize=26)
+    plt.ylabel('Dokładność [%]',fontsize=26)
     plt.xticks(range(1, 16))
     plt.yticks(range(0, 110, 10))
     plt.grid(axis='y', linestyle='--', linewidth=0.7)
@@ -103,8 +103,8 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
 
-    plt.xlabel('Liczba sąsiadów k',fontsize=18)
-    plt.ylabel('Dokładność [%]',fontsize=18)
+    plt.xlabel('Liczba sąsiadów k',fontsize=26)
+    plt.ylabel('Dokładność [%]',fontsize=26)
     plt.xticks(range(1, 16))
     plt.yticks(range(0, 110, 10))
     plt.grid(axis='y', linestyle='--', linewidth=0.7)
