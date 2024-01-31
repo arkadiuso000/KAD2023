@@ -123,22 +123,23 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
 
 
 #zad 3 podpunkt 1
+iteracje = []
 def kSrednich(dane, k, czyPokazacWykres=False):
     centroidy = inicjacjaCentroidow(dane,k)
     kopiaDanych = copy.deepcopy(dane)
+    iloscIteracji = 0
     while True:
+        iloscIteracji += 1
         poprzednieCentroidy = centroidy
         klastry = przypiszKlastry(kopiaDanych, centroidy)
         centroidy = aktualizacjaCentroidow(kopiaDanych, klastry, k)
 
         if warunekStopu(poprzednieCentroidy,centroidy):
             break
+    iteracje.append(iloscIteracji)
     for i in range(len(kopiaDanych)):
-        # print(klastry[i])
-        # print(centroidy[klastry[i]])
         kopiaDanych[i].append(klastry[i])
         kopiaDanych[i].append(centroidy[klastry[i]])
-        # print("dlugosc danych", len(dane[i]))
 
     #funkcja zwraca nam poczatkowe dane z dodana kolumna klastrow
     columns = ["sepal length", "sepal width", "petal length", "petal width", "cluster", "centroid"]
@@ -192,7 +193,7 @@ def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, 
     ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     zapiszWykres('wykres')
     plt.show()
-def generujWykresWCSSIteracje(dane):
+def generujWykresWCSSIteracje(dane,x):
     x = [2, 3, 4, 5, 6, 7, 8, 9, 10]
     y1 = dane[0]
     y2 = dane[1]
@@ -211,36 +212,17 @@ def generujWykresWCSSIteracje(dane):
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     zapiszWykres('wykres')
     plt.show()
-def liczWCSS(dane, centroidy, klastry):
-    WCSS = 0
-    for i in range(len(dane)):
-        punkt = dane[i]
-        klaster = klastry[i]
-        centroid = centroidy[klaster]
-        WCSS += obliczOdleglosc(centroid,punkt)
-    return WCSS
-def okrojDaneWCSS(dane):
-    okrojoneIlosci = []
-    okrojoneWCSS = []
-    for i in range(2, 11):
-        wartosciIlosciPetli = []
-        wartosciWCSS = []
-        for rekord in dane:
-            if rekord[0] == i:
-                wartosciIlosciPetli.append(rekord[1])
-                wartosciWCSS.append(rekord[2])
+def liczWCSS(dane):
+    WCSS_glowne = 0
+    for dana in dane:
 
-        sredniaWartoscIlosciPetli = wyznaczSredniaArytmetyczna(wartosciIlosciPetli)
-        sredniaWartoscWCSS = wyznaczSredniaArytmetyczna(wartosciWCSS)
-        okrojoneIlosci.append(sredniaWartoscIlosciPetli)
-        okrojoneWCSS.append(sredniaWartoscWCSS)
-    return [okrojoneIlosci,okrojoneWCSS]
-def unikalneWartosci(lista):
-    output = []
-    unikalne = list(set(lista))
-    for unikalnaWartosc in unikalne:
-        output.append([unikalnaWartosc, lista.count(unikalnaWartosc)])
-    return output
+        punkt = dana[:4]
+        centroid = dana[5]
+        odlegloscPunktuOdCentroidu = obliczOdleglosc(punkt, centroid)
+        WCSS_glowne += odlegloscPunktuOdCentroidu**2
+    return WCSS_glowne
+
+
 def inicjacjaCentroidow(dane, k):
     cecha1Max = cecha2Max = cecha3Max = cecha4Max = float(-9999)
     cecha1Min = cecha2Min = cecha3Min = cecha4Min = float(9999)
