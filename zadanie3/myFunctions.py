@@ -132,11 +132,41 @@ def kSrednich(dane, k, czyPokazacWykres=False):
 
         if warunekStopu(poprzednieCentroidy,centroidy):
             break
+    for i in range(len(dane)):
+        dane[i].append(klastry[i])
+        dane[i].append(centroidy[klastry[i]])
+    #funkcja zwraca nam poczatkowe dane z dodana kolumna klastrow
+    columns = ["sepal length", "sepal width", "petal length", "petal width", "cluster", "centroid"]
+    df = pd.DataFrame(dane, columns=columns)
+    # print("centroidy", centroidy)
+    # print(df)
 
-    return klastry
+
+    if k==3:
+        #generowanie wykresow
+        #1st
+        generujWykresKSrednich(centroidy,df,"sepal length", "sepal width", "Długość działki kielicha (cm)","Szerokość dzialki kielicha (cm)")
+        #2nd
+        generujWykresKSrednich(centroidy,df,"sepal length", "petal length", "Długość działki kielicha (cm)", "Długość płatka (cm)")
+        #3rd
+        generujWykresKSrednich(centroidy,df,"sepal length", "petal width", "Długość działki kielicha (cm)", "Szerokość płatka (cm)")
+        #4th
+        generujWykresKSrednich(centroidy,df,"sepal width", "petal length", "Szerokość działki kielicha (cm)", "Długość płatka (cm)")
+        #5th
+        generujWykresKSrednich(centroidy,df,"sepal width", "petal width", "Szerokość działki kielicha (cm)", "Szerokość płatka (cm)")
+        #6th
+        generujWykresKSrednich(centroidy,df,"petal length", "petal width", "Długość płatka (cm)", "Szerokość płatka (cm)")
+
+    return dane
+
+
+
 def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, yAxisTitle):
     fig, ax = plt.subplots()
+    sameKolumny = ["sepal length", "sepal width", "petal length", "petal width", "cluster"]
 
+    xCentroida = sameKolumny.index(xTableName)
+    yCentroida = sameKolumny.index(yTableName)
     #Rysowanie punktów klastra
     colors = ['#e82727', '#8fe3c1', '#8fd4f7']  # Lista kolorów dla klastrów
     for cluster_number in output['cluster'].unique():
@@ -146,7 +176,7 @@ def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, 
 
     #Rysowanie centroidów
     for idx, centroid in enumerate(centroidy):
-        ax.plot(centroid[0], centroid[1], 'X', color=colors[idx], markersize=10, markeredgecolor='black',
+        ax.plot(centroid[xCentroida], centroid[yCentroida], 'X', color=colors[idx], markersize=10, markeredgecolor='black',
                 label=f'Centroid {idx}')
 
     ax.set_xlabel(xAxisTitle, fontsize=14)
@@ -222,13 +252,11 @@ def inicjacjaCentroidow(dane, k):
     centroidy = []
     for i in range(k):
         centroidy.append([losowaWartosc(cecha1Max, cecha1Min), losowaWartosc(cecha2Max, cecha2Min), losowaWartosc(cecha3Max, cecha3Min), losowaWartosc(cecha4Max, cecha4Min)])
-    print("poczatkowe centroidy",centroidy)
     return centroidy
 def losowaWartosc(minimum, maximum):
     losowaWart = (maximum - minimum) * random.random() + minimum
     return losowaWart
 def przypiszKlastry(dane, centroidy):
-    print("centroidy ",centroidy)
     klastry = []
     for punkt in dane:
 
@@ -267,7 +295,7 @@ def aktualizacjaCentroidow(punkty, klastry, k):
         #nie liczymy centroidow dla pustych klastrow
         if liczbyWKlastrach[i] != 0:
             noweCentroidy[i] =(cecha1 / liczbyWKlastrach[i], cecha2 / liczbyWKlastrach[i], cecha3 / liczbyWKlastrach[i], cecha4 / liczbyWKlastrach[i])
-    print("zaktualizowane centroidy",noweCentroidy)
+
     return noweCentroidy
 def warunekStopu(poprzedniePrzypisania, aktualnePrzypisania):
     return poprzedniePrzypisania == aktualnePrzypisania
