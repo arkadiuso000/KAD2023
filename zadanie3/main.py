@@ -15,7 +15,7 @@ dataTrain = mf.importData("././dane_train_test/data_train.csv")
 dataTest = mf.importData("././dane_train_test/data_test.csv")
 #flags
 podpunkt1Flag = True
-podpunkt2Flag = False
+podpunkt2Flag = True
 
 if podpunkt1Flag:
 
