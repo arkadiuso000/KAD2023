@@ -39,7 +39,7 @@ def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
         dokladnosc = accuracy_score(testY, dopasowania)
         listaDokladnosci.append(dokladnosc)
 
-    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodaje bo lista indexuje od 0
+    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodajemy bo lista indexuje od 0
 
     # tworzymy macierz pomyłek dla najlepszego k
     najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
@@ -90,7 +90,7 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
         dokladnosc = accuracy_score(testY, dopasowania)
         listaDokladnosci.append(dokladnosc)
 
-    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodaje bo lista indexuje od 0
+    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodajemy bo lista indexuje od 0
 
     # tworzymy macierz pomyłek dla najlepszego k
     najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
