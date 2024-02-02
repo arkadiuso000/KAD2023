@@ -13,13 +13,13 @@ from matplotlib import ticker
 
 #zad 3 podpunkt 2
 def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
-    #wybieramy wszystkie cechy
+
     trainX = dataTrainX.values
     trainY = dataTrainY.values
     testX = dataTestX.values
     testY = dataTestY.values
 
-    #tutaj normalizujemy dane
+
     scaler = StandardScaler()
     trainX = scaler.fit_transform(trainX)
     testX = scaler.transform(testX)
@@ -28,27 +28,27 @@ def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
     listaDokladnosci = []
 
     for k in range(1, 16):
-        #tworzymy i trenujemy
+
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(trainX, trainY)
 
-        # przewidujemy etykiety dla danych testowych
+
         dopasowania = knn.predict(testX)
 
-        # obliczamy i przechowywamy dokładności
+
         dokladnosc = accuracy_score(testY, dopasowania)
         listaDokladnosci.append(dokladnosc)
 
-    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodajemy bo lista indexuje od 0
+    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1
 
-    # tworzymy macierz pomyłek dla najlepszego k
+
     najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
     najlepszeKNN.fit(trainX, trainY)
     najlepszeDopasowania = najlepszeKNN.predict(testX)
     macierzPomylekDlaNajlepszegoK = confusion_matrix(testY, najlepszeDopasowania)
 
-    # rysujemy wykresu dokładności
-    # rysujemy wykresu słupkowego dokładności
+
+
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
     plt.xlabel('Liczba sąsiadów k',fontsize=26)
@@ -64,13 +64,13 @@ def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
     print("Macierz pomyłek dla najlepszego k:")
     print(macierzPomylekDlaNajlepszegoK)
 def podpunkt2WszystkieCechy(dataTrain,dataTest):
-    #wybieramy wszystkie cechy
+
     trainX = dataTrain.iloc[:, :-1].values
     trainY = dataTrain.iloc[:, -1].values
     testX = dataTest.iloc[:, :-1].values
     testY = dataTest.iloc[:, -1].values
 
-    #tutaj normalizujemy dane
+
     scaler = StandardScaler()
     trainX = scaler.fit_transform(trainX)
     testX = scaler.transform(testX)
@@ -79,27 +79,27 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
     listaDokladnosci = []
 
     for k in range(1, 16):
-        #tworzymy i trenujemy
+
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(trainX, trainY)
 
-        # przewidujemy etykiety dla danych testowych
+
         dopasowania = knn.predict(testX)
 
-        # obliczamy i przechowywamy dokładności
+
         dokladnosc = accuracy_score(testY, dopasowania)
         listaDokladnosci.append(dokladnosc)
 
-    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodajemy bo lista indexuje od 0
+    najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1
 
-    # tworzymy macierz pomyłek dla najlepszego k
+
     najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
     najlepszeKNN.fit(trainX, trainY)
     najlepszeDopasowania = najlepszeKNN.predict(testX)
     macierzPomylekDlaNajlepszegoK = confusion_matrix(testY, najlepszeDopasowania)
 
-    # rysujemy wykresu dokładności
-    # rysujemy wykresu słupkowego dokładności
+
+
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
 
@@ -116,7 +116,7 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
     print(macierzPomylekDlaNajlepszegoK)
 
 
-#zad 3 podpunkt 1
+
 iteracje = []
 def kSrednich(dane, k, czyPokazacWykres=False):
     centroidy = inicjacjaCentroidow(dane,k)
@@ -135,7 +135,7 @@ def kSrednich(dane, k, czyPokazacWykres=False):
         kopiaDanych[i].append(klastry[i])
         kopiaDanych[i].append(centroidy[klastry[i]])
 
-    #funkcja zwraca nam poczatkowe dane z dodana kolumna klastrow
+
     columns = ["sepal length", "sepal width", "petal length", "petal width", "cluster", "centroid"]
 
     df = pd.DataFrame(kopiaDanych, columns=columns)
@@ -143,18 +143,18 @@ def kSrednich(dane, k, czyPokazacWykres=False):
     dfToList = df.values.tolist()
 
     if k==3:
-        #generowanie wykresow
-        #1st
+
+
         generujWykresKSrednich(centroidy,df,"sepal length", "sepal width", "Długość działki kielicha (cm)","Szerokość dzialki kielicha (cm)")
-        #2nd
+
         generujWykresKSrednich(centroidy,df,"sepal length", "petal length", "Długość działki kielicha (cm)", "Długość płatka (cm)")
-        #3rd
+
         generujWykresKSrednich(centroidy,df,"sepal length", "petal width", "Długość działki kielicha (cm)", "Szerokość płatka (cm)")
-        #4th
+
         generujWykresKSrednich(centroidy,df,"sepal width", "petal length", "Szerokość działki kielicha (cm)", "Długość płatka (cm)")
-        #5th
+
         generujWykresKSrednich(centroidy,df,"sepal width", "petal width", "Szerokość działki kielicha (cm)", "Szerokość płatka (cm)")
-        #6th
+
         generujWykresKSrednich(centroidy,df,"petal length", "petal width", "Długość płatka (cm)", "Szerokość płatka (cm)")
 
     return dfToList
@@ -164,21 +164,21 @@ def generujWykresKSrednich(centroidy, output,xTableName,yTableName, xAxisTitle, 
 
     xCentroida = sameKolumny.index(xTableName)
     yCentroida = sameKolumny.index(yTableName)
-    #Rysowanie punktów klastra
-    kolory = ['#e82727', '#8fe3c1', '#8fd4f7']  # Lista kolorów dla klastrów
+
+    kolory = ['#e82727', '#8fe3c1', '#8fd4f7']
     for numerKlastra in output['cluster'].unique():
         klaster = output[output['cluster'] == numerKlastra]
         ax.scatter(klaster[xTableName], klaster[yTableName], label=f'Cluster {numerKlastra}',
                    color=kolory[numerKlastra])
 
-    #Rysowanie centroidów
+
     for indeks, centroid in enumerate(centroidy):
         ax.plot(centroid[xCentroida], centroid[yCentroida], 'X', color=kolory[indeks], markersize=10, markeredgecolor='black',
                 label=f'Centroid {indeks}')
 
     ax.set_xlabel(xAxisTitle, fontsize=14)
     ax.set_ylabel(yAxisTitle, fontsize=14)
-    # Formatowanie osi X i Y, aby zawsze używały liczby zmiennoprzecinkowej z jednym miejscem po przecinku
+
     ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
     zapiszWykres('wykres')
@@ -199,7 +199,7 @@ def generujWykresWCSSIteracje(iloscIteracji, wartoscWCSS):
 
     ax2.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.1f'))
 
-    plt.subplots_adjust(left=0.1, right=0.8, top=0.9, bottom=0.1)  # Dostosowanie marginesów
+    plt.subplots_adjust(left=0.1, right=0.8, top=0.9, bottom=0.1)
     fig.legend(handles=[line1, line2])
     zapiszWykres('wykres')
     plt.show()
@@ -268,7 +268,7 @@ def aktualizacjaCentroidow(punkty, klastry, k):
         liczbyWKlastrach[klaster] += 1
 
     for i, (cecha1,cecha2,cecha3,cecha4) in enumerate(noweCentroidy):
-        #nie liczymy centroidow dla pustych klastrow
+
         if liczbyWKlastrach[i] != 0:
             noweCentroidy[i] =(cecha1 / liczbyWKlastrach[i], cecha2 / liczbyWKlastrach[i], cecha3 / liczbyWKlastrach[i], cecha4 / liczbyWKlastrach[i])
 
@@ -288,7 +288,7 @@ def zapiszWykres(nazwa, rozszerzenie='.jpg', folder='./wykresy'):
 
 
 
-#funkcja, ktora ujednolica proces importowania danych
+
 def importData(fileDst):
     columns = ["sepal length", "sepal width", "petal length", "petal width", "species"]
     mapowanie_gatunkow = {
@@ -297,6 +297,6 @@ def importData(fileDst):
         2: 'virginica'
     }
     myData = pd.read_csv(fileDst, header=None, names=columns)
-    # zamieniam 0,1,2 na odpowiednie nazwy
+
     myData['species'] = myData['species'].replace(mapowanie_gatunkow)
     return myData
