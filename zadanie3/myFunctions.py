@@ -28,27 +28,27 @@ def podpunkt2PoszczegolneCechy(dataTrainX, dataTrainY,dataTestX, dataTestY):
     listaDokladnosci = []
 
     for k in range(1, 16):
-        #tworze i trenuje
+        #tworzymy i trenujemy
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(trainX, trainY)
 
-        # Przewidywanie etykiet dla danych testowych
+        # przewidujemy etykiety dla danych testowych
         dopasowania = knn.predict(testX)
 
-        # Obliczanie i przechowywanie dokładności
+        # obliczamy i przechowywamy dokładności
         dokladnosc = accuracy_score(testY, dopasowania)
         listaDokladnosci.append(dokladnosc)
 
     najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodaje bo lista indexuje od 0
 
-    # Utworzenie macierzy pomyłek dla najlepszego k
+    # tworzymy macierz pomyłek dla najlepszego k
     najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
     najlepszeKNN.fit(trainX, trainY)
     najlepszeDopasowania = najlepszeKNN.predict(testX)
     macierzPomylekDlaNajlepszegoK = confusion_matrix(testY, najlepszeDopasowania)
 
-    # Rysowanie wykresu dokładności
-    # Rysowanie wykresu słupkowego dokładności
+    # rysujemy wykresu dokładności
+    # rysujemy wykresu słupkowego dokładności
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
     plt.xlabel('Liczba sąsiadów k',fontsize=26)
@@ -79,27 +79,27 @@ def podpunkt2WszystkieCechy(dataTrain,dataTest):
     listaDokladnosci = []
 
     for k in range(1, 16):
-        #tworze i trenuje
+        #tworzymy i trenujemy
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(trainX, trainY)
 
-        # Przewidywanie etykiet dla danych testowych
+        # przewidujemy etykiety dla danych testowych
         dopasowania = knn.predict(testX)
 
-        # Obliczanie i przechowywanie dokładności
+        # obliczamy i przechowywamy dokładności
         dokladnosc = accuracy_score(testY, dopasowania)
         listaDokladnosci.append(dokladnosc)
 
     najlepszeK = listaDokladnosci.index(max(listaDokladnosci)) + 1  #1 dodaje bo lista indexuje od 0
 
-    # Utworzenie macierzy pomyłek dla najlepszego k
+    # tworzymy macierz pomyłek dla najlepszego k
     najlepszeKNN = KNeighborsClassifier(n_neighbors=najlepszeK)
     najlepszeKNN.fit(trainX, trainY)
     najlepszeDopasowania = najlepszeKNN.predict(testX)
     macierzPomylekDlaNajlepszegoK = confusion_matrix(testY, najlepszeDopasowania)
 
-    # Rysowanie wykresu dokładności
-    # Rysowanie wykresu słupkowego dokładności
+    # rysujemy wykresu dokładności
+    # rysujemy wykresu słupkowego dokładności
     plt.figure(figsize=(12, 8))
     plt.bar(range(1, 16), [acc * 100 for acc in listaDokladnosci], color='skyblue', edgecolor='black')
 
